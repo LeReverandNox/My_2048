@@ -63,10 +63,27 @@ body {
     text-align: center;
     font-size: 2em;
 }
-.main_header h1 {
+.header_title h1 {
     padding-top: 40px;
+}
+.header_action {
 
 }
+.replay_button {
+    display: inline-block;
+    background: #8f7a66;
+    border-radius: 3px;
+    padding: 0 20px;
+    text-decoration: none;
+    color: #f9f6f2;
+    height: 40px;
+    line-height: 42px;
+    cursor: pointer;
+    display: block;
+    text-align: center;
+    float: right;
+}
+
 
 
 /* GRID */
@@ -125,7 +142,7 @@ body {
 }
 
 .tuile_32 {
-    background: #f67c5;
+    background: #f67c5f;
     color: #f9f6f2;
 }
 
