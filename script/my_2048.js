@@ -74,10 +74,11 @@ $(document).ready(function() {
 
             for(x = 0; x < 4; x++) {
 
-                if((grid[y + 1] !== undefined && grid[y + 1][j] === grid[y][x]) ||
-                    (grid[y - 1] !== undefined && grid[y - 1][j] === grid[y][x]) ||
-                    (grid[y][x + 1] !== undefined && grid[y][x + 1] === grid[y][x]) ||
-                    (grid[y][x - 1] !== undefined && grid[y][x - 1] === grid[y][x])) {
+                if((grid[y + 1] !== undefined && grid[y + 1][x] === grid[y][x]) ||
+                    // (grid[y - 1] !== undefined && grid[y - 1][x] === grid[y][x]) ||
+                    // (grid[y][x + 1] !== undefined && grid[y][x + 1] === grid[y][x]) ||
+                    // (grid[y][x - 1] !== undefined && grid[y][x - 1] === grid[y][x])) {
+                    (grid[y][x + 1] !== undefined && grid[y][x + 1] === grid[y][x])) {
 
                     return true;
 
@@ -86,7 +87,7 @@ $(document).ready(function() {
         }
 
     }
-
+    console.log("Plus de possibilité, KO");
     return false;
 
 }
