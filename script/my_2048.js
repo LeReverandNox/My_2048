@@ -4,10 +4,12 @@ $(document).ready(function() {
     [2, 2, 0, 0],
     [2, 2, 2, 0],
     [2, 0, 0, 0]];
+    var undo = [];
 
     var score = 0;
     var bestScore = 0;
     var spawn = false;
+    var end = false;
 
     var $mainSection = $(".main_section");
     var $gridHolder = $(".grid_holder");
@@ -144,7 +146,7 @@ function generateRandom() {
 
     if (maybe.length !== 0) {
 
-        var tuileValue = (Math.random() < 0.5 ? 2 : 4 );
+        var tuileValue = (Math.random() < 0.9 ? 2 : 4 );
         var theChoosenOne = maybe[Math.floor(Math.random() * maybe.length)];
 
         grid[theChoosenOne[0]][theChoosenOne[1]] = tuileValue;
@@ -181,7 +183,15 @@ function endGame(tuile) {
             replay();
         };
 
+        if (e.which === 85) {
+
+            e.preventDefault();
+            undoIt();
+        };
+
     });
+
+    end = true;
 
     if (tuile === 2048) {
 
@@ -200,6 +210,14 @@ function move(direction) {
 
     var x, y/*, dontTouch = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]]*/;
     spawn = false;
+
+    /*
+    // Je parse parse une version string de ma grille pour pouvoir en faire une copie dans reférence. JS à la c**
+    // Merci Ruben ! Je t'appelle Papa pendant une semaine
+    */
+
+    var oldGrid = JSON.parse(JSON.stringify(grid));
+    undo.push([oldGrid, score]);
 
     removeSpaces(direction);
 
@@ -488,10 +506,16 @@ function replay() {
     cleanBackupScore();
     $(document).off();
     $(".click_button").off();
+    cleanMessages();
+    beginGame();
+
+}
+
+function cleanMessages() {
+
     $(".message").remove();
     $gridHolder.removeClass("gameover");
     $gridHolder.removeClass("victory");
-    beginGame();
 
 }
 
@@ -520,9 +544,39 @@ function gameOver() {
     }, 1000);
 }
 
+function undoIt() {
+
+    if (undo[0] !== undefined) {
+
+        if (end) {
+
+        cleanMessages();
+        startKeyboard();
+        startClicks();
+
+        };
+
+        var lastUndoGrid = undo[undo.length - 1][0];
+        var lastUndoScore = undo[ undo.length -1][1];
+        undo.pop();
+
+
+        grid = lastUndoGrid;
+        score = lastUndoScore;
+
+        getBestScore();
+        displayBestScore();
+        displayScore();
+        updateDisplayGrid();
+
+    };
+
+}
+
     // Controles clavier
     function startKeyboard() {
 
+        console.log("On start le clavier");
         $(document).keydown(function(e) {
 
             if (e.which === 37) {
@@ -555,6 +609,12 @@ function gameOver() {
                 e.preventDefault();
                 replay();
 
+            };
+
+            if (e.which === 85) {
+
+                e.preventDefault();
+                undoIt();
             };
 
         });
@@ -595,6 +655,10 @@ function gameOver() {
         replay();
 
     });
+    $(".undo_button").on("click", function(e) {
+        e.preventDefault();
+        undoIt();
+    })
 
 
     // En route !

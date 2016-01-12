@@ -66,7 +66,7 @@ body {
 .header_title h1 {
     font-weight: bold;
     font-size: 3em;
-    padding-top: 40px;
+    padding-bottom: 40px;
 }
 
 .header_score, .header_score_title, .header_best_score, .header_best_score_title {
@@ -74,9 +74,8 @@ body {
     display: inline-block;
 
 }
-.replay_button {
+.replay_button, .undo_button {
     display: inline-block;
-    background: #8f7a66;
     border-radius: 3px;
     padding: 0 20px;
     text-decoration: none;
@@ -84,9 +83,17 @@ body {
     height: 40px;
     line-height: 42px;
     cursor: pointer;
-    display: block;
     text-align: center;
     margin-top: 15px;
+    width: 35%;
+}
+.replay_button {
+    background: #f65e3b;
+;
+}
+.undo_button {
+    background: #8f7a66;
+
 }
 
 .main_section {
@@ -253,3 +260,26 @@ body {
     box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.55556), inset 0 0 0 1px rgba(255, 255, 255, 0.33333);
 }
 
+/* FOOTER */
+.main_footer {
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+.main_footer p {
+    line-height: 25px;
+    border-bottom: 1px solid #776e65;
+    padding-bottom: 15px;
+    padding-top: 15px;
+}
+.main_footer p:first-child {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5em;
+    /*margin-bottom: 10px;*/
+    border-bottom: 0;
+    padding-bottom: 0;
+    padding-top: 0px;
+}
+.main_footer p:last-child {
+    border-bottom: none;
+}
