@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-    var grid = [[2, 2, 2, 0],
+    var grid = [[2, 2, 2, 2],
     [2, 2, 0, 0],
     [2, 2, 2, 0],
     [2, 0, 0, 0]];
@@ -15,11 +15,13 @@ $(document).ready(function() {
 
     function resetGrid() {
 
-        for (var i = 0; i < 4; i++) {
+        var x, y;
 
-            for (var j = 0; j < 4; j++) {
+        for (y = 0; y < 4; y++) {
 
-                grid[i][j] = 0;
+            for (x = 0; x < 4; x++) {
+
+                grid[y][x] = 0;
 
             };
 
@@ -73,18 +75,16 @@ $(document).ready(function() {
                     (grid[i - 1] !== undefined && grid[i - 1][j] === grid[i][j]) ||
                     (grid[i][j + 1] !== undefined && grid[i][j + 1] === grid[i][j]) ||
                     (grid[i][j - 1] !== undefined && grid[i][j - 1] === grid[i][j])) {
-                // if ((grid[i + 1] !== undefined && grid[i + 1][j] === grid[i][j]) ||
-                    // (grid[i][j + 1] !== undefined && grid[i][j + 1] === grid[i][j])) {
 
-    return true;
+                    return true;
 
-}
+            }
 
-}
+        }
 
-}
+    }
 
-return false;
+    return false;
 
 }
 
@@ -100,28 +100,27 @@ function beginGame() {
     } else {
 
         grid = JSON.parse(localStorage.getItem("Backup2048"));
-        score = localStorage.getItem("BackupScore2048");
+        score = parseInt(localStorage.getItem("BackupScore2048"));
 
     };
 
     displayBestScore();
     startKeyboard();
-    // updateDisplayGrid();
     updateDisplayGrid();
 
 }
 
 function generateRandom() {
 
-    var maybe = [];
+    var x, y, maybe = [];
 
-    for (var i = 0; i < 4; i++) {
+    for (y = 0; y < 4; y++) {
 
-        for (var j = 0; j < 4; j++) {
+        for (x = 0; x < 4; x++) {
 
-            if (grid[i][j] === 0) {
+            if (grid[x][y] === 0) {
 
-                maybe.push([i, j]);
+                maybe.push([x, y]);
 
             };
 
@@ -143,6 +142,7 @@ function generateRandom() {
                 endGame();
 
             };
+
         };
 
     } else if (!possibleMove()) {
@@ -163,6 +163,7 @@ function endGame(tuile) {
         if (e.which === 82) {
 
             e.preventDefault();
+            $(document).off();
             beginGame();
 
         };
@@ -183,335 +184,310 @@ function endGame(tuile) {
 
 
 function move(direction) {
+
     var x, y, dontTouch = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]];
     spawn = false;
 
     removeSpaces(direction);
 
     if(direction === "up") {
+
         for(y = 0; y < 4; y++) {
+
             for(x = 0; x < 4; x++) {
+
                 if(y != 3 && grid[y][x] !== 0 && dontTouch[y][x] === 0) {
+
                     if(grid[y + 1][x] === grid[y][x]) {
+
                         addScore((grid[y][x]) * 2);
                         grid[y][x] = 0;
                         grid[y + 1][x] *= 2;
                         dontTouch[y + 1][x] = 1;
                         spawn = true;
-                        } /*else if(grid[y + 1][x] === 0) {
-                            grid[y + 1][x] = grid[y][x];
-                            grid[y][x] = 0;
-                            // spawn = true;
-                        }*/
-                    } else {
-                        // spawn = true;
-                    }
-                }
-            }
-        }
-        else if(direction === "down") {
-            for(y = 3; y >= 0; y--) {
-                for(x = 0; x < 4; x++) {
-                    if(y != 0 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
-                        if(grid[y - 1][x] === grid[y][x]) {
-                            addScore((grid[y][x]) * 2);
-                            grid[y][x] =0;
-                            grid[y - 1][x] *= 2;
-                            dontTouch[y - 1][x] = 1;
-                        } /*else if(grid[y - 1][x] ===0) {
-                            grid[y - 1][x] = grid[y][x];
-                            grid[y][x] = 0;
-                        }*/
-                    }
-                }
-            }
-        }
-        else if(direction === "right") {
-            for(x = 3; x >= 0; x--) {
-                for(y = 0; y < 4; y++) {
-                    if(x !== 0 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
-                        if(grid[y][x - 1] === grid[y][x]) {
-                            addScore((grid[y][x]) * 2);
-                            grid[y][x] = 0;
-                            grid[y][x - 1] *= 2;
-                            dontTouch[y][x - 1] = 1;
 
-                        } /*else if(grid[y][x - 1] ===0) {
-                            grid[y][x - 1] = grid[y][x];
-                            grid[y][x] =0;
-                        }*/
                     }
+
                 }
+
             }
+
         }
-        else if(direction === "left") {
+
+    } else if(direction === "down") {
+
+        for(y = 3; y >= 0; y--) {
+
             for(x = 0; x < 4; x++) {
-                for(y = 0; y < 4; y++) {
-                    if(x !== 3 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
-                        if(grid[y][x + 1] === grid[y][x]) {
-                            addScore((grid[y][x]) * 2);
-                            grid[y][x] = 0;
-                            grid[y][x + 1] *= 2;
-                            dontTouch[y][x + 1] = 1;
-                        } /*else if(grid[y][x + 1] ===0) {
-                            grid[y][x + 1] = grid[y][x];
-                            grid[y][x] = 0;
-                        }*/
+
+                if(y != 0 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
+
+                    if(grid[y - 1][x] === grid[y][x]) {
+
+                        addScore((grid[y][x]) * 2);
+                        grid[y][x] =0;
+                        grid[y - 1][x] *= 2;
+                        dontTouch[y - 1][x] = 1;
                     }
+
                 }
+
             }
-        }
-        // if(direction === "up") {
-        //     for(y = 3; y >= 0; y--) {
-        //         for(x = 0; x < 4; x++) {
-        //             if(y != 0 && grid[y][x] !== 0 && dontTouch[y][x] === 0) {
-        //                 if(grid[y - 1][x] === grid[y][x]) {
-        //                     addScore((grid[y][x]) * 2);
-        //                     grid[y][x] = 0;
-        //                     grid[y - 1][x] *= 2;
-        //                     dontTouch[y-1][x] = 1;
-        //                     move = false;
-        //                 } else if(grid[y - 1][x] === 0) {
-        //                     grid[y - 1][x] = grid[y][x];
-        //                     grid[y][x] = 0;
-        //                     move = false;
-        //                 }
-        //             } else {
-        //                 move = false;
-        //             }
-        //         }
-        //     } else if(direction === "right") {
-        //     for(x = 0; x < 4; x++) {
-        //         for(y = 0; y < 4; y++) {
-        //             if(x != 3 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
-        //                 if(grid[y][x + 1] === grid[y][x]) {
-        //                     addScore((grid[y][x]) * 2);
-        //                     grid[y][x] =0;
-        //                     grid[y][x + 1] *= 2;
-        //                     dontTouch[y][x+1] = 1;
-
-        //                 } else if(grid[y][x + 1] ===0) {
-        //                     grid[y][x + 1] = grid[y][x];
-        //                     grid[y][x] =0;
-        //                 }
-        //             }
-        //         }
-        //     }
-        // } else if(direction === "left") {
-        //     for(x = 3; x >= 0; x--) {
-        //         for(y = 3; y >= 0; y--) {
-        //             if(x != 0 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
-        //                 if(grid[y][x - 1] === grid[y][x]) {
-        //                     addScore((grid[y][x]) * 2);
-        //                     grid[y][x] =0;
-        //                     grid[y][x - 1] *= 2;
-        //                     dontTouch[y][x-1] = 1;
-        //                 } else if(grid[y][x - 1] ===0) {
-        //                     grid[y][x - 1] = grid[y][x];
-        //                     grid[y][x] =0;
-        //                 }
-        //             }
-        //         }
-        //     }
-        // } else if(direction === "down") {
-        //     for(y = 0; y < 4; y++) {
-        //         for(x = 3; x >= 0; x--) {
-        //             if(y != 3 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
-        //                 if(grid[y + 1][x] === grid[y][x]) {
-        //                     addScore((grid[y][x]) * 2);
-        //                     grid[y][x] =0;
-        //                     grid[y + 1][x] *= 2;
-        //                     dontTouch[y+1][x] = 1;
-        //                 } else if(grid[y + 1][x] ===0) {
-        //                     grid[y + 1][x] = grid[y][x];
-        //                     grid[y][x] = 0;
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
-        removeSpaces(direction);
-
-        if (spawn) {
-            console.log("onSpawn");
-            generateRandom();
 
         }
 
-        updateDisplayGrid();
+    } else if(direction === "right") {
 
+        for(x = 3; x >= 0; x--) {
 
-        displayScore();
-
-        // backupGrid();
-        // backupScore();
-
-    }
-
-    function removeSpaces(direction) {
-
-        var x, y;
-        if(direction === "up") {
-            for(y = 3; y >= 0; y--) {
-                for(x = 0; x < 4; x++) {
-                    if(y != 0 && grid[y][x] !== 0 && grid[y - 1][x] === 0) {
-                        grid[y - 1][x] = grid[y][x];
-                        grid[y][x] = 0;
-                        spawn = true;
-                        removeSpaces(direction);
-                    }
-                }
-            }
-        }
-
-        if(direction === "right") {
-            for(x = 0; x < 4; x++) {
-                for(y = 0; y < 4; y++) {
-                    if(x != 3 && grid[y][x] !== 0 && grid[y][x+1] === 0) {
-                        grid[y][x + 1] = grid[y][x];
-                        grid[y][x] = 0;
-                        spawn = true;
-                        removeSpaces(direction);
-                    }
-                }
-            }
-        }
-        if(direction === "left") {
-            for(x = 3; x >= 0; x--) {
-                for(y = 3; y >= 0; y--) {
-                    if(x != 0 && grid[y][x] !== 0 && grid[y][x - 1] === 0) {
-                        grid[y][x - 1] = grid[y][x];
-                        grid[y][x] = 0;
-                        spawn = true;
-                        removeSpaces(direction);
-                    }
-                }
-            }
-        }
-        if(direction === "down") {
             for(y = 0; y < 4; y++) {
-                for(x = 3; x >= 0; x--) {
-                    if(y != 3 && grid[y][x] !== 0 && grid[y + 1][x] === 0) {
-                        grid[y + 1][x] = grid[y][x];
+
+                if(x !== 0 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
+
+                    if(grid[y][x - 1] === grid[y][x]) {
+
+                        addScore((grid[y][x]) * 2);
                         grid[y][x] = 0;
-                        spawn = true;
-                        removeSpaces(direction);
+                        grid[y][x - 1] *= 2;
+                        dontTouch[y][x - 1] = 1;
+
                     }
+
                 }
+
             }
+
         }
 
-    }
+    } else if(direction === "left") {
 
-    function addScore(nbr) {
+        for(x = 0; x < 4; x++) {
 
-        score += nbr;
+            for(y = 0; y < 4; y++) {
 
-    }
+                if(x !== 3 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
 
-    function displayScore() {
+                    if(grid[y][x + 1] === grid[y][x]) {
 
-        if (score > bestScore) {
+                        addScore((grid[y][x]) * 2);
+                        grid[y][x] = 0;
+                        grid[y][x + 1] *= 2;
+                        dontTouch[y][x + 1] = 1;
 
-            setBestScore(score);
+                    }
 
-        };
+                }
 
-        displayBestScore();
-        $scoreDisplay.html(score);
-
-    }
-
-    function resetScore() {
-
-        score = 0;
-        displayScore();
-
-    }
-
-    function getBestScore() {
-
-        if(localStorage.getItem("BestScore2048") === null) {
-
-            bestScore = 0;
-
-        } else {
-
-            bestScore = localStorage.getItem("BestScore2048");
+            }
 
         }
 
     }
 
-    function displayBestScore() {
+    removeSpaces(direction);
 
-        getBestScore();
-        $bestScoreDisplay.html(bestScore);
+    if (spawn) {
 
-    }
-
-    function setBestScore(score) {
-
-        localStorage.setItem("BestScore2048", score);
+        generateRandom();
 
     }
 
-    function backupGrid() {
+    updateDisplayGrid();
+    displayScore();
+    backupGrid();
+    backupScore();
 
+}
 
-        localStorage.setItem("Backup2048", JSON.stringify(grid));
+function removeSpaces(direction) {
+
+    var x, y;
+
+    if(direction === "up") {
+
+        for(y = 3; y >= 0; y--) {
+
+            for(x = 0; x < 4; x++) {
+
+                if(y != 0 && grid[y][x] !== 0 && grid[y - 1][x] === 0) {
+
+                    grid[y - 1][x] = grid[y][x];
+                    grid[y][x] = 0;
+                    spawn = true;
+                    removeSpaces(direction);
+
+                }
+
+            }
+
+        }
+
+    } else if(direction === "right") {
+
+        for(x = 0; x < 4; x++) {
+
+            for(y = 0; y < 4; y++) {
+
+                if(x != 3 && grid[y][x] !== 0 && grid[y][x+1] === 0) {
+
+                    grid[y][x + 1] = grid[y][x];
+                    grid[y][x] = 0;
+                    spawn = true;
+                    removeSpaces(direction);
+
+                }
+
+            }
+
+        }
+
+    } else if(direction === "left") {
+
+        for(x = 3; x >= 0; x--) {
+
+            for(y = 3; y >= 0; y--) {
+
+                if(x != 0 && grid[y][x] !== 0 && grid[y][x - 1] === 0) {
+
+                    grid[y][x - 1] = grid[y][x];
+                    grid[y][x] = 0;
+                    spawn = true;
+                    removeSpaces(direction);
+
+                }
+
+            }
+
+        }
+
+    } else if(direction === "down") {
+
+        for(y = 0; y < 4; y++) {
+
+            for(x = 3; x >= 0; x--) {
+
+                if(y != 3 && grid[y][x] !== 0 && grid[y + 1][x] === 0) {
+
+                    grid[y + 1][x] = grid[y][x];
+                    grid[y][x] = 0;
+                    spawn = true;
+                    removeSpaces(direction);
+
+                }
+
+            }
+
+        }
 
     }
 
-    function cleanBackupGrid() {
+}
 
-        localStorage.removeItem("Backup2048");
+function addScore(nbr) {
+
+    score += nbr;
+
+}
+
+function displayScore() {
+
+    if (score > bestScore) {
+
+        setBestScore(score);
+
+    };
+
+    displayBestScore();
+    $scoreDisplay.html(score);
+
+}
+
+function resetScore() {
+
+    score = 0;
+    displayScore();
+
+}
+
+function getBestScore() {
+
+    if(localStorage.getItem("BestScore2048") === null) {
+
+        bestScore = 0;
+
+    } else {
+
+        bestScore = localStorage.getItem("BestScore2048");
 
     }
 
-    function backupScore() {
+}
 
-        cleanBackupScore();
-        localStorage.setItem("BackupScore2048", JSON.stringify(score));
+function displayBestScore() {
 
-    }
+    getBestScore();
+    $bestScoreDisplay.html(bestScore);
 
-    function cleanBackupScore() {
+}
 
-        localStorage.removeItem("BackupScore2048");
+function setBestScore(score) {
 
-    }
+    localStorage.setItem("BestScore2048", score);
+
+}
+
+function backupGrid() {
+
+
+    localStorage.setItem("Backup2048", JSON.stringify(grid));
+
+}
+
+function cleanBackupGrid() {
+
+    localStorage.removeItem("Backup2048");
+
+}
+
+function backupScore() {
+
+    cleanBackupScore();
+    localStorage.setItem("BackupScore2048", JSON.stringify(score));
+
+}
+
+function cleanBackupScore() {
+
+    localStorage.removeItem("BackupScore2048");
+
+}
 
     // Controles clavier
     function startKeyboard() {
 
         $(document).keydown(function(e) {
+
             if (e.which === 37) {
 
                 e.preventDefault();
-                // console.log("On appuie sur Gauche");
                 move("left");
 
             };
             if (e.which === 38) {
 
                 e.preventDefault();
-                // console.log("On appuie sur Haut");
                 move("up");
 
             };
             if (e.which === 39) {
 
                 e.preventDefault();
-                // console.log("On appuie sur Droite");
                 move("right");
 
             };
             if (e.which === 40) {
 
                 e.preventDefault();
-                // console.log("On appuie sur Bas");
                 move("down");
 
             };
@@ -519,8 +495,8 @@ function move(direction) {
             if (e.which === 82) {
 
                 e.preventDefault();
-
-                // cleanBackupGrid();
+                cleanBackupGrid();
+                $(document).off();
                 beginGame();
 
             };
@@ -533,7 +509,8 @@ function move(direction) {
 
         e.preventDefault();
 
-        // cleanBackupGrid();
+        cleanBackupGrid();
+        $(document).off();
         beginGame();
 
     });
