@@ -59,11 +59,13 @@ body {
 }
 
 .main_header {
-    min-height: 200px;
     text-align: center;
     font-size: 2em;
+    margin-bottom: 25px;
 }
 .header_title h1 {
+    font-weight: bold;
+    font-size: 3em;
     padding-top: 40px;
 }
 .header_action {
@@ -87,7 +89,6 @@ body {
     cursor: pointer;
     display: block;
     text-align: center;
-    float: right;
     margin-top: 15px;
 }
 

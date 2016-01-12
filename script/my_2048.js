@@ -12,6 +12,7 @@ $(document).ready(function() {
     var $gridCells= $(".grid");
     var $scoreDisplay = $(".header_score");
     var $bestScoreDisplay = $(".header_best_score");
+    var $twitterLink = $(".twitter_link");
 
     function resetGrid() {
 
@@ -104,7 +105,11 @@ function beginGame() {
 
     };
 
+    getBestScore();
+
     displayBestScore();
+    displayScore();
+    generateTwitterLink();
     startKeyboard();
     updateDisplayGrid();
 
@@ -294,6 +299,7 @@ function move(direction) {
 
     updateDisplayGrid();
     displayScore();
+    generateTwitterLink();
     backupGrid();
     backupScore();
 
@@ -462,6 +468,22 @@ function cleanBackupScore() {
 
 }
 
+function generateTwitterLink() {
+
+    $twitterLink.attr("data-text", "Wouhou, j'ai fait " + score + " points sur My_2048 ! Viendez jouer !");
+    console.log($twitterLink.attr("data-text"));
+    // !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+}
+
+function replay() {
+
+    cleanBackupGrid();
+    cleanBackupScore();
+    $(document).off();
+    beginGame();
+
+}
+
     // Controles clavier
     function startKeyboard() {
 
@@ -495,9 +517,7 @@ function cleanBackupScore() {
             if (e.which === 82) {
 
                 e.preventDefault();
-                cleanBackupGrid();
-                $(document).off();
-                beginGame();
+                replay();
 
             };
 
@@ -508,10 +528,7 @@ function cleanBackupScore() {
     $(".replay_button").on("click", function(e) {
 
         e.preventDefault();
-
-        cleanBackupGrid();
-        $(document).off();
-        beginGame();
+        replay();
 
     });
 
