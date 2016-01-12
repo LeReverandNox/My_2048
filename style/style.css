@@ -61,15 +61,12 @@ body {
 .main_header {
     text-align: center;
     font-size: 2em;
-    margin-bottom: 25px;
+    margin-bottom: 60px;
 }
 .header_title h1 {
     font-weight: bold;
     font-size: 3em;
     padding-top: 40px;
-}
-.header_action {
-
 }
 
 .header_score, .header_score_title, .header_best_score, .header_best_score_title {
@@ -92,6 +89,9 @@ body {
     margin-top: 15px;
 }
 
+.main_section {
+    position: relative;
+}
 
 
 /* GRID */
@@ -103,6 +103,65 @@ body {
     padding: 15px;
     border-radius: 6px;
 }
+.gameover {
+    transition: 1.5s;
+    -webkit-filter: blur(3px);
+    -moz-filter: blur(3px);
+    -o-filter: blur(3px);
+    -ms-filter: blur(3px);
+    filter: blur(3px);
+    background-color: #ccc;
+}
+
+.victory {
+
+    transition: 1.5s;
+    -webkit-filter: blur(3px);
+    -moz-filter: blur(3px);
+    -o-filter: blur(3px);
+    -ms-filter: blur(3px);
+    filter: blur(3px);
+    background-color: #EDC22E;
+
+}
+
+.message {
+    font-size: 2em;
+    text-align: center;
+    position: absolute;
+    top: 42%;
+    width: 100%;
+    display: none;
+}
+
+.click_button {
+    position: absolute;
+    height: 45px;
+    width: 45px;
+    background-size: cover;
+}
+
+.click_button_up {
+    background-image: url(arrow_up.png);
+    top: -50px;
+    left: 226px;
+}
+.click_button_left {
+    background-image: url(arrow_left.png);
+    left: -50px;
+    top: 226px;
+}
+.click_button_down {
+    background-image: url(arrow_down.png);
+    bottom: -50px;
+    left: 226px;
+}
+.click_button_right {
+    background-image: url(arrow_right.png);
+    right: -50px;
+    top: 226px;
+}
+
 .grid {
     width: 470px;
     height: 470px;

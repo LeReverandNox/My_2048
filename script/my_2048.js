@@ -9,6 +9,8 @@ $(document).ready(function() {
     var bestScore = 0;
     var spawn = false;
 
+    var $mainSection = $(".main_section");
+    var $gridHolder = $(".grid_holder");
     var $gridCells= $(".grid");
     var $scoreDisplay = $(".header_score");
     var $bestScoreDisplay = $(".header_best_score");
@@ -68,14 +70,14 @@ $(document).ready(function() {
 
     function possibleMove() {
 
-        for(i = 0; i < 4; i++) {
+        for(y = 0; y < 4; y++) {
 
-            for(j = 0; j < 4; j++) {
+            for(x = 0; x < 4; x++) {
 
-                if((grid[i + 1] !== undefined && grid[i + 1][j] === grid[i][j]) ||
-                    (grid[i - 1] !== undefined && grid[i - 1][j] === grid[i][j]) ||
-                    (grid[i][j + 1] !== undefined && grid[i][j + 1] === grid[i][j]) ||
-                    (grid[i][j - 1] !== undefined && grid[i][j - 1] === grid[i][j])) {
+                if((grid[y + 1] !== undefined && grid[y + 1][j] === grid[y][x]) ||
+                    (grid[y - 1] !== undefined && grid[y - 1][j] === grid[y][x]) ||
+                    (grid[y][x + 1] !== undefined && grid[y][x + 1] === grid[y][x]) ||
+                    (grid[y][x - 1] !== undefined && grid[y][x - 1] === grid[y][x])) {
 
                     return true;
 
@@ -109,9 +111,15 @@ function beginGame() {
 
     displayBestScore();
     displayScore();
-    generateTwitterLink();
     startKeyboard();
+    startClicks();
     updateDisplayGrid();
+
+    if (!possibleMove()) {
+
+        endGame();
+
+    };
 
 }
 
@@ -163,25 +171,24 @@ function endGame(tuile) {
 
     updateDisplayGrid();
     $(document).off();
+    $(".click_button").off();
     $(document).keydown(function(e) {
 
         if (e.which === 82) {
 
             e.preventDefault();
-            $(document).off();
-            beginGame();
-
+            replay();
         };
 
     });
 
     if (tuile === 2048) {
 
-        alert("Vous avez gagné !");
+        victory();
 
     } else {
 
-        alert("Vous avez perdu !");
+        gameOver();
 
     };
 
@@ -299,7 +306,6 @@ function move(direction) {
 
     updateDisplayGrid();
     displayScore();
-    generateTwitterLink();
     backupGrid();
     backupScore();
 
@@ -468,20 +474,49 @@ function cleanBackupScore() {
 
 }
 
-function generateTwitterLink() {
+// function generateTwitterLink() {
 
-    $twitterLink.attr("data-text", "Wouhou, j'ai fait " + score + " points sur My_2048 ! Viendez jouer !");
-    console.log($twitterLink.attr("data-text"));
-    // !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
-}
+//     $twitterLink.attr("data-text", "Wouhou, j'ai fait " + score + " points sur My_2048 ! Viendez jouer !");
+//     console.log($twitterLink.attr("data-text"));
+//     // !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+// }
 
 function replay() {
 
     cleanBackupGrid();
     cleanBackupScore();
     $(document).off();
+    $(".click_button").off();
+    $(".message").remove();
+    $gridHolder.removeClass("gameover");
+    $gridHolder.removeClass("victory");
     beginGame();
 
+}
+
+function victory() {
+
+    $gridHolder.addClass("victory");
+    $victoryMessage = $("<p class='message'>Félicitations !<br />Vous avez atteint 2048 !<p>");
+    $victoryMessage.appendTo($mainSection);
+    setTimeout(function() {
+
+        $victoryMessage.fadeIn(1000);
+
+    }, 1000);
+
+}
+
+function gameOver() {
+
+    $gridHolder.addClass("gameover");
+    $gameOverMessage = $("<p class='message'>Dommage, vous avez perdu !<p>");
+    $gameOverMessage.appendTo($mainSection);
+    setTimeout(function() {
+
+        $gameOverMessage.fadeIn(1000);
+
+    }, 1000);
 }
 
     // Controles clavier
@@ -523,6 +558,34 @@ function replay() {
 
         });
 
+    }
+
+    function startClicks() {
+
+        $(".click_button_up").on("click", function(e) {
+
+            e.preventDefault();
+            move("up");
+
+        })
+        $(".click_button_left").on("click", function(e) {
+
+            e.preventDefault();
+            move("left");
+
+        })
+        $(".click_button_down").on("click", function(e) {
+
+            e.preventDefault();
+            move("down");
+
+        })
+        $(".click_button_right").on("click", function(e) {
+
+            e.preventDefault();
+            move("right");
+
+        })
     }
 
     $(".replay_button").on("click", function(e) {
