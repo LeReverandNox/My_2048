@@ -208,7 +208,7 @@ function endGame(tuile) {
 
 function move(direction) {
 
-    var x, y/*, dontTouch = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]]*/;
+    var x, y, dontTouch = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]];
     spawn = false;
 
     /*
@@ -227,15 +227,14 @@ function move(direction) {
 
             for(x = 0; x < 4; x++) {
 
-                if(y != 3 && grid[y][x] !== 0 /*&& dontTouch[y][x] === 0*/) {
+                if(y != 3 && grid[y][x] !== 0 && dontTouch[y][x] === 0) {
 
                     if(grid[y + 1][x] === grid[y][x]) {
 
                         addScore((grid[y][x]) * 2);
                         grid[y][x] = 0;
                         grid[y + 1][x] *= 2;
-                        // dontTouch[y + 1][x] = 1;
-                        // spawn = true;
+                        dontTouch[y + 1][x] = 1;
 
                     }
 
@@ -251,14 +250,14 @@ function move(direction) {
 
             for(x = 0; x < 4; x++) {
 
-                if(y != 0 && grid[y][x] > 0 /*&& dontTouch[y][x] === 0*/) {
+                if(y != 0 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
 
                     if(grid[y - 1][x] === grid[y][x]) {
 
                         addScore((grid[y][x]) * 2);
                         grid[y][x] =0;
                         grid[y - 1][x] *= 2;
-                        // dontTouch[y - 1][x] = 1;
+                        dontTouch[y - 1][x] = 1;
                     }
 
                 }
@@ -273,14 +272,14 @@ function move(direction) {
 
             for(y = 0; y < 4; y++) {
 
-                if(x !== 0 && grid[y][x] > 0 /*&& dontTouch[y][x] === 0*/) {
+                if(x !== 0 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
 
                     if(grid[y][x - 1] === grid[y][x]) {
 
                         addScore((grid[y][x]) * 2);
                         grid[y][x] = 0;
                         grid[y][x - 1] *= 2;
-                        // dontTouch[y][x - 1] = 1;
+                        dontTouch[y][x - 1] = 1;
 
                     }
 
@@ -296,14 +295,14 @@ function move(direction) {
 
             for(y = 0; y < 4; y++) {
 
-                if(x !== 3 && grid[y][x] > 0 /*&& dontTouch[y][x] === 0*/) {
+                if(x !== 3 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
 
                     if(grid[y][x + 1] === grid[y][x]) {
 
                         addScore((grid[y][x]) * 2);
                         grid[y][x] = 0;
                         grid[y][x + 1] *= 2;
-                        // dontTouch[y][x + 1] = 1;
+                        dontTouch[y][x + 1] = 1;
 
                     }
 
