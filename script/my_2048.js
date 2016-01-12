@@ -1,24 +1,16 @@
 $(document).ready(function() {
 
-    var grid = [[8, 8, 8, 0],
+    var grid = [[2, 2, 2, 0],
     [2, 2, 0, 0],
-    [2, 0, 0, 0],
-    [0, 0, 0, 2]];
-
-    // var grid = [[8, 4, 6, 8],
-    // [8, 6, 4, 2],
-    // [2, 4, 6, 8],
-    // [8, 6, 4, 2]];
-
-    var $gridCells= $(".grid");
-
-    // var grid = [[1, 1, 1, 1],
-    // [1, 1, 1, 1],
-    // [1, 1, 1, 1],
-    // [1, 1, 1, 1]];
+    [2, 2, 2, 0],
+    [2, 0, 0, 0]];
 
     var score = 0;
     var bestScore = 0;
+    // var lock = false;
+    var spawn = false;
+
+    var $gridCells= $(".grid");
     var $scoreDisplay = $(".header_score");
     var $bestScoreDisplay = $(".header_best_score");
 
@@ -65,9 +57,18 @@ $(document).ready(function() {
 
                 }
 
+
             }
 
         }
+
+        // lock = false;
+
+        // if (!possibleMove()) {
+
+            // endGame();
+
+        // };
 
     }
 
@@ -77,7 +78,12 @@ $(document).ready(function() {
 
             for(j = 0; j < 4; j++) {
 
-                if((grid[i + 1] !== undefined && grid[i + 1][j] === grid[i][j]) || (grid[i][j + 1] !== undefined && grid[i][j + 1] === grid[i][j])) {
+                if((grid[i + 1] !== undefined && grid[i + 1][j] === grid[i][j]) ||
+                    (grid[i - 1] !== undefined && grid[i - 1][j] === grid[i][j]) ||
+                    (grid[i][j + 1] !== undefined && grid[i][j + 1] === grid[i][j]) ||
+                    (grid[i][j - 1] !== undefined && grid[i][j - 1] === grid[i][j])) {
+                // if ((grid[i + 1] !== undefined && grid[i + 1][j] === grid[i][j]) ||
+                    // (grid[i][j + 1] !== undefined && grid[i][j + 1] === grid[i][j])) {
 
                     return true;
 
@@ -93,8 +99,10 @@ $(document).ready(function() {
 
     function beginGame() {
 
-        resetGrid();
+        // resetGrid();
         resetScore();
+        startKeyboard();
+        updateDisplayGrid();
         generateRandom();
         generateRandom();
         updateDisplayGrid();
@@ -126,8 +134,19 @@ $(document).ready(function() {
 
             grid[theChoosenOne[0]][theChoosenOne[1]] = tuileValue;
 
+            if (maybe.length === 1) {
+
+                if (!possibleMove()) {
+
+                    console.log("Plus de possibiliite");
+                    endGame();
+
+                };
+            };
+
         } else if (!possibleMove()) {
 
+            console.log("Plus de possibiliite");
             endGame();
 
         };
@@ -137,13 +156,13 @@ $(document).ready(function() {
 
     function endGame(tuile) {
 
+            updateDisplayGrid();
         $(document).off();
         $(document).keydown(function(e) {
 
             if (e.which === 82) {
 
                 e.preventDefault();
-                // console.log("On appuie sur Replay");
                 beginGame();
 
             };
@@ -165,88 +184,171 @@ $(document).ready(function() {
 
     function move(direction) {
         var x, y, dontTouch = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]];
-        var move = true;
+        // var spawn = true;
+        spawn = false;
 
-        if(direction === "up") {
-            for(y = 3; y >= 0; y--) {
-                for(x = 0; x < 4; x++) {
-                    if(y != 0 && grid[y][x] !== 0 && dontTouch[y][x] === 0) {
-                        if(grid[y - 1][x] === grid[y][x]) {
-                            addScore((grid[y][x]) * 2);
-                            grid[y][x] = 0;
-                            grid[y - 1][x] *= 2;
-                            dontTouch[y-1][x] = 1;
-                            move = false;
-                        } else if(grid[y - 1][x] === 0) {
-                            grid[y - 1][x] = grid[y][x];
-                            grid[y][x] = 0;
-                            move = false;
-                        }
-                    } else {
-                        move = false;
-                    }
-                }
-            }
-        } else if(direction === "right") {
-            for(x = 0; x < 4; x++) {
+        // if (!lock) {
+
+        //     lock = true;
+            removeSpaces(direction);
+
+            //     }
+            if(direction === "up") {
                 for(y = 0; y < 4; y++) {
-                    if(x != 3 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
-                        if(grid[y][x + 1] === grid[y][x]) {
-                            addScore((grid[y][x]) * 2);
-                            grid[y][x] =0;
-                            grid[y][x + 1] *= 2;
-                            dontTouch[y][x+1] = 1;
-
-                        } else if(grid[y][x + 1] ===0) {
-                            grid[y][x + 1] = grid[y][x];
-                            grid[y][x] =0;
+                    for(x = 0; x < 4; x++) {
+                        if(y != 3 && grid[y][x] !== 0 && dontTouch[y][x] === 0) {
+                            if(grid[y + 1][x] === grid[y][x]) {
+                                addScore((grid[y][x]) * 2);
+                                grid[y][x] = 0;
+                                grid[y + 1][x] *= 2;
+                                dontTouch[y + 1][x] = 1;
+                                spawn = true;
+                            } /*else if(grid[y + 1][x] === 0) {
+                                grid[y + 1][x] = grid[y][x];
+                                grid[y][x] = 0;
+                                // spawn = true;
+                            }*/
+                        } else {
+                            // spawn = true;
                         }
                     }
                 }
             }
-        } else if(direction === "left") {
-            for(x = 3; x >= 0; x--) {
+             else if(direction === "down") {
                 for(y = 3; y >= 0; y--) {
-                    if(x != 0 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
-                        if(grid[y][x - 1] === grid[y][x]) {
-                            addScore((grid[y][x]) * 2);
-                            grid[y][x] =0;
-                            grid[y][x - 1] *= 2;
-                            dontTouch[y][x-1] = 1;
-                        } else if(grid[y][x - 1] ===0) {
-                            grid[y][x - 1] = grid[y][x];
-                            grid[y][x] =0;
+                    for(x = 0; x < 4; x++) {
+                        if(y != 0 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
+                            if(grid[y - 1][x] === grid[y][x]) {
+                                addScore((grid[y][x]) * 2);
+                                grid[y][x] =0;
+                                grid[y - 1][x] *= 2;
+                                dontTouch[y - 1][x] = 1;
+                            } /*else if(grid[y - 1][x] ===0) {
+                                grid[y - 1][x] = grid[y][x];
+                                grid[y][x] = 0;
+                            }*/
                         }
                     }
                 }
             }
-        } else if(direction === "down") {
-            for(y = 0; y < 4; y++) {
+            else if(direction === "right") {
                 for(x = 3; x >= 0; x--) {
-                    if(y != 3 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
-                        if(grid[y + 1][x] === grid[y][x]) {
-                            addScore((grid[y][x]) * 2);
-                            grid[y][x] =0;
-                            grid[y + 1][x] *= 2;
-                            dontTouch[y+1][x] = 1;
-                        } else if(grid[y + 1][x] ===0) {
-                            grid[y + 1][x] = grid[y][x];
-                            grid[y][x] = 0;
+                    for(y = 0; y < 4; y++) {
+                        if(x !== 0 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
+                            if(grid[y][x - 1] === grid[y][x]) {
+                                addScore((grid[y][x]) * 2);
+                                grid[y][x] = 0;
+                                grid[y][x - 1] *= 2;
+                                dontTouch[y][x - 1] = 1;
+
+                            } /*else if(grid[y][x - 1] ===0) {
+                                grid[y][x - 1] = grid[y][x];
+                                grid[y][x] =0;
+                            }*/
                         }
                     }
                 }
             }
-        }
+            else if(direction === "left") {
+                for(x = 0; x < 4; x++) {
+                    for(y = 0; y < 4; y++) {
+                        if(x !== 3 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
+                            if(grid[y][x + 1] === grid[y][x]) {
+                                addScore((grid[y][x]) * 2);
+                                grid[y][x] = 0;
+                                grid[y][x + 1] *= 2;
+                                dontTouch[y][x + 1] = 1;
+                            } /*else if(grid[y][x + 1] ===0) {
+                                grid[y][x + 1] = grid[y][x];
+                                grid[y][x] = 0;
+                            }*/
+                        }
+                    }
+                }
+             }
+            // if(direction === "up") {
+            //     for(y = 3; y >= 0; y--) {
+            //         for(x = 0; x < 4; x++) {
+            //             if(y != 0 && grid[y][x] !== 0 && dontTouch[y][x] === 0) {
+            //                 if(grid[y - 1][x] === grid[y][x]) {
+            //                     addScore((grid[y][x]) * 2);
+            //                     grid[y][x] = 0;
+            //                     grid[y - 1][x] *= 2;
+            //                     dontTouch[y-1][x] = 1;
+            //                     move = false;
+            //                 } else if(grid[y - 1][x] === 0) {
+            //                     grid[y - 1][x] = grid[y][x];
+            //                     grid[y][x] = 0;
+            //                     move = false;
+            //                 }
+            //             } else {
+            //                 move = false;
+            //             }
+            //         }
+            //     } else if(direction === "right") {
+            //     for(x = 0; x < 4; x++) {
+            //         for(y = 0; y < 4; y++) {
+            //             if(x != 3 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
+            //                 if(grid[y][x + 1] === grid[y][x]) {
+            //                     addScore((grid[y][x]) * 2);
+            //                     grid[y][x] =0;
+            //                     grid[y][x + 1] *= 2;
+            //                     dontTouch[y][x+1] = 1;
 
-        removeSpaces(direction);
-        if (move) {
+            //                 } else if(grid[y][x + 1] ===0) {
+            //                     grid[y][x + 1] = grid[y][x];
+            //                     grid[y][x] =0;
+            //                 }
+            //             }
+            //         }
+            //     }
+            // } else if(direction === "left") {
+            //     for(x = 3; x >= 0; x--) {
+            //         for(y = 3; y >= 0; y--) {
+            //             if(x != 0 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
+            //                 if(grid[y][x - 1] === grid[y][x]) {
+            //                     addScore((grid[y][x]) * 2);
+            //                     grid[y][x] =0;
+            //                     grid[y][x - 1] *= 2;
+            //                     dontTouch[y][x-1] = 1;
+            //                 } else if(grid[y][x - 1] ===0) {
+            //                     grid[y][x - 1] = grid[y][x];
+            //                     grid[y][x] =0;
+            //                 }
+            //             }
+            //         }
+            //     }
+            // } else if(direction === "down") {
+            //     for(y = 0; y < 4; y++) {
+            //         for(x = 3; x >= 0; x--) {
+            //             if(y != 3 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
+            //                 if(grid[y + 1][x] === grid[y][x]) {
+            //                     addScore((grid[y][x]) * 2);
+            //                     grid[y][x] =0;
+            //                     grid[y + 1][x] *= 2;
+            //                     dontTouch[y+1][x] = 1;
+            //                 } else if(grid[y + 1][x] ===0) {
+            //                     grid[y + 1][x] = grid[y][x];
+            //                     grid[y][x] = 0;
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
 
-            generateRandom();
+            removeSpaces(direction);
 
-        };
+            console.log(spawn);
+            if (spawn) {
 
-        updateDisplayGrid();
-        displayScore();
+                generateRandom();
+
+            };
+
+            updateDisplayGrid();
+            displayScore();
+
+        // };
 
     }
 
@@ -259,6 +361,7 @@ $(document).ready(function() {
                     if(y != 0 && grid[y][x] !== 0 && grid[y - 1][x] === 0) {
                         grid[y - 1][x] = grid[y][x];
                         grid[y][x] = 0;
+                        spawn = true;
                         removeSpaces(direction);
                     }
                 }
@@ -271,6 +374,7 @@ $(document).ready(function() {
                     if(x != 3 && grid[y][x] !== 0 && grid[y][x+1] === 0) {
                         grid[y][x + 1] = grid[y][x];
                         grid[y][x] = 0;
+                        spawn = true;
                         removeSpaces(direction);
                     }
                 }
@@ -282,6 +386,7 @@ $(document).ready(function() {
                     if(x != 0 && grid[y][x] !== 0 && grid[y][x - 1] === 0) {
                         grid[y][x - 1] = grid[y][x];
                         grid[y][x] = 0;
+                        spawn = true;
                         removeSpaces(direction);
                     }
                 }
@@ -293,6 +398,7 @@ $(document).ready(function() {
                     if(y != 3 && grid[y][x] !== 0 && grid[y + 1][x] === 0) {
                         grid[y + 1][x] = grid[y][x];
                         grid[y][x] = 0;
+                        spawn = true;
                         removeSpaces(direction);
                     }
                 }
@@ -315,50 +421,56 @@ $(document).ready(function() {
 
     function resetScore() {
 
-        $scoreDisplay.html("0");
+        score = 0;
+        displayScore();
 
     }
 
     // Controles clavier
-    $(document).keydown(function(e) {
-        if (e.which === 37) {
+    function startKeyboard() {
 
-            e.preventDefault();
-            // console.log("On appuie sur Gauche");
-            move("left");
+        console.log("On lance le clavier");
+        $(document).keydown(function(e) {
+            if (e.which === 37) {
 
-        };
-        if (e.which === 38) {
+                e.preventDefault();
+                // console.log("On appuie sur Gauche");
+                move("left");
 
-            e.preventDefault();
-            // console.log("On appuie sur Haut");
-            move("up");
+            };
+            if (e.which === 38) {
 
-        };
-        if (e.which === 39) {
+                e.preventDefault();
+                // console.log("On appuie sur Haut");
+                move("up");
 
-            e.preventDefault();
-            // console.log("On appuie sur Droite");
-            move("right");
+            };
+            if (e.which === 39) {
 
-        };
-        if (e.which === 40) {
+                e.preventDefault();
+                // console.log("On appuie sur Droite");
+                move("right");
 
-            e.preventDefault();
-            // console.log("On appuie sur Bas");
-            move("down");
+            };
+            if (e.which === 40) {
 
-        };
+                e.preventDefault();
+                // console.log("On appuie sur Bas");
+                move("down");
 
-        if (e.which === 82) {
+            };
 
-            e.preventDefault();
-            // console.log("On appuie sur Replay");
-            beginGame();
+            if (e.which === 82) {
 
-        };
+                e.preventDefault();
+                // console.log("On appuie sur Replay");
+                beginGame();
 
-    });
+            };
+
+        });
+
+    }
 
     $(".replay_button").on("click", function(e) {
 
