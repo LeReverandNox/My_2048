@@ -16,7 +16,7 @@ $(document).ready(function() {
     var $gridCells= $(".grid");
     var $scoreDisplay = $(".header_score");
     var $bestScoreDisplay = $(".header_best_score");
-    var $twitterLink = $(".twitter_link");
+    var $twitterLink;
 
     function resetGrid() {
 
@@ -492,13 +492,6 @@ function cleanBackupScore() {
 
 }
 
-// function generateTwitterLink() {
-
-//     $twitterLink.attr("data-text", "Wouhou, j'ai fait " + score + " points sur My_2048 ! Viendez jouer !");
-//     console.log($twitterLink.attr("data-text"));
-//     // !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
-// }
-
 function replay() {
 
     cleanBackupGrid();
@@ -513,18 +506,52 @@ function replay() {
 function cleanMessages() {
 
     $(".message").remove();
+    $(".share").remove();
     $gridHolder.removeClass("gameover");
     $gridHolder.removeClass("victory");
 
 }
 
-function victory() {
+function prepareTwitterLink() {
+
+    $twitterLink = $('<a href="https://twitter.com/share" class="twitter-share-button"{count} data-text="J\'ai fait ' + score + ' points sur My_2048 ! Et toi ?" data-size="large" data-hashtags="My_2048">Tweet</a>');
+
+    !function(d,s,id) {
+        if(d.getElementById(id)) {
+            d.getElementById(id).remove();
+        }
+        var js, fjs = d.getElementsByTagName(s)[0], p=/^http:/.test(d.location) ? 'http':'https';
+        js = d.createElement(s);
+        js.id = id;
+        js.src = p + '://platform.twitter.com/widgets.js';
+        fjs.parentNode.insertBefore(js,fjs);
+    }(document, 'script', 'twitter-wjs');
+
+}
+
+function shareBlock() {
+
+      // Twitter link
+      $share = $("<div class='share'></div>");
+      $shareText = $("<p class='share_text'>Partagez votre score !</p>")
+      prepareTwitterLink();
+      $shareText.appendTo($share);
+      $twitterLink.appendTo($share);
+      $share.appendTo($mainSection);
+
+  }
+
+  function victory() {
 
     $gridHolder.addClass("victory");
-    $victoryMessage = $("<p class='message'>Félicitations !<br />Vous avez atteint 2048 !<p>");
+    $victoryMessage = $("<p class='message'>Félicitations !<br />Vous avez atteint 2048 !</p>");
     $victoryMessage.appendTo($mainSection);
+
+    shareBlock();
+
     setTimeout(function() {
 
+        $share.fadeIn(1000);
         $victoryMessage.fadeIn(1000);
 
     }, 1000);
@@ -534,10 +561,14 @@ function victory() {
 function gameOver() {
 
     $gridHolder.addClass("gameover");
-    $gameOverMessage = $("<p class='message'>Dommage, vous avez perdu !<p>");
+    $gameOverMessage = $("<p class='message'>Dommage, vous avez perdu !</p>");
     $gameOverMessage.appendTo($mainSection);
+
+    shareBlock();
+
     setTimeout(function() {
 
+        $share.fadeIn(1000);
         $gameOverMessage.fadeIn(1000);
 
     }, 1000);
@@ -549,9 +580,9 @@ function undoIt() {
 
         if (end) {
 
-        cleanMessages();
-        startKeyboard();
-        startClicks();
+            cleanMessages();
+            startKeyboard();
+            startClicks();
 
         };
 

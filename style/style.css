@@ -89,7 +89,7 @@ body {
 }
 .replay_button {
     background: #f65e3b;
-;
+    ;
 }
 .undo_button {
     background: #8f7a66;
@@ -140,7 +140,16 @@ body {
     width: 100%;
     display: none;
 }
-
+.share {
+    position: absolute;
+    top: 50%;
+    left: 36%;
+    text-align: center;
+    display: none;
+}
+.twitter-share-button {
+    margin-top: 5px;
+}
 .click_button {
     position: absolute;
     height: 45px;
