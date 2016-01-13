@@ -496,6 +496,7 @@ function replay() {
 
     cleanBackupGrid();
     cleanBackupScore();
+    undo = [];
     $(document).off();
     $(".click_button").off();
     cleanMessages();
