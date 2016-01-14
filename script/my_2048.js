@@ -5,6 +5,8 @@ $(document).ready(function() {
     [2, 2, 2, 0],
     [2, 0, 0, 0]];
     var undo = [];
+    var spawned = [];
+    var merged = [];
 
     var score = 0;
     var bestScore = 0;
@@ -53,7 +55,6 @@ $(document).ready(function() {
 
     function endGame(tuile) {
 
-        updateDisplayGrid();
         $(document).off();
         $(".click_button").off();
         $(document).keydown(function(e) {
@@ -140,7 +141,7 @@ $(document).ready(function() {
       function victory() {
 
         $gridHolder.addClass("victory");
-        $victoryMessage = $("<p class='message'>Félicitations !<br />Vous avez atteint 2048 !</p>");
+        $victoryMessage = $("<p class='message win'>Félicitations !<br />Vous avez atteint 2048 !</p>");
         $victoryMessage.appendTo($mainSection);
 
         shareBlock();
@@ -157,7 +158,7 @@ $(document).ready(function() {
     function gameOver() {
 
         $gridHolder.addClass("gameover");
-        $gameOverMessage = $("<p class='message'>Dommage, vous avez perdu !</p>");
+        $gameOverMessage = $("<p class='message loose'>Dommage, vous avez perdu !</p>");
         $gameOverMessage.appendTo($mainSection);
 
         shareBlock();
@@ -242,6 +243,8 @@ $(document).ready(function() {
 
             grid[theChoosenOne[0]][theChoosenOne[1]] = tuileValue;
 
+            spawned.push([theChoosenOne[0], theChoosenOne[1]]);
+
             if (maybe.length === 1) {
 
                 if (!possibleMove()) {
@@ -276,12 +279,38 @@ $(document).ready(function() {
                     $cell.removeClass();
                     $cell.addClass("grid_cell");
                     $cell.addClass("tuile_" + grid[i][j]);
+                    // $cell.addClass("tuile-position-" + i + "-" + j);
 
                     if (grid[i][j] === 2048) {
 
                         endGame(2048);
 
                     }
+
+                    // On gere l'animation SPAWN
+                    merged.sort();
+                    for (var k = 0 ; k < merged.length ; k++) {
+
+                        if (merged[k][0] === i && merged[k][1] === j) {
+
+                            $cell.addClass("merge");
+
+                        };
+
+                    };
+
+                    // On gere l'animation SPAWN
+                    spawned.sort();
+                    for (var k = 0 ; k < spawned.length ; k++) {
+
+                        if (spawned[k][0] === i && spawned[k][1] === j) {
+
+                            $cell.addClass("spawn");
+
+                        };
+
+                    };
+
 
                 } else {
 
@@ -296,6 +325,8 @@ $(document).ready(function() {
 
         }
 
+        spawned = [];
+        merged = [];
     }
 
 
@@ -327,6 +358,7 @@ $(document).ready(function() {
 
                         if(grid[y + 1][x] === grid[y][x]) {
 
+                            merged.push([y, x]);
                             addScore((grid[y][x]) * 2);
                             grid[y][x] = 0;
                             grid[y + 1][x] *= 2;
@@ -350,6 +382,7 @@ $(document).ready(function() {
 
                         if(grid[y - 1][x] === grid[y][x]) {
 
+                            merged.push([y, x]);
                             addScore((grid[y][x]) * 2);
                             grid[y][x] =0;
                             grid[y - 1][x] *= 2;
@@ -372,6 +405,7 @@ $(document).ready(function() {
 
                         if(grid[y][x - 1] === grid[y][x]) {
 
+                            merged.push([y, x]);
                             addScore((grid[y][x]) * 2);
                             grid[y][x] = 0;
                             grid[y][x - 1] *= 2;
@@ -395,6 +429,7 @@ $(document).ready(function() {
 
                         if(grid[y][x + 1] === grid[y][x]) {
 
+                            merged.push([y, x]);
                             addScore((grid[y][x]) * 2);
                             grid[y][x] = 0;
                             grid[y][x + 1] *= 2;
@@ -713,8 +748,16 @@ $(document).ready(function() {
 
 
 
+    // SWIPE SOURIS
+    function startMouseSwipe() {
+
+
+
+    }
+
 
     // En route !
+    startMouseSwipe();
     beginGame();
 
 });
