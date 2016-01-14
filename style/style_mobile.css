@@ -112,9 +112,13 @@ body {
 }
 
 .grid {
+    background-image: url(../style/swipe_arrows.png);
     width: 900px;
     height: 900px;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
+
 .grid_row {
     margin-bottom: 15px;
 }
