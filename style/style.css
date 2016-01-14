@@ -303,7 +303,12 @@ body {
 .main_footer p:last-child {
     border-bottom: none;
 }
-
+.otp {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: 2em;
+}
 
 .spawn {
 

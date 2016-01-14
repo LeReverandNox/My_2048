@@ -755,6 +755,34 @@ $(document).ready(function() {
 
     }
 
+    // Socket.io FTW !
+    var socket = io.connect('http://localhost:8080');
+
+    socket.on("direction", function(e) {
+
+        switch(e) {
+            case "up":
+                move("up");
+                break;
+            case "left":
+                move("left");
+                break;
+            case "right":
+                move("right");
+                break;
+            case "down":
+                move("down");
+                break;
+        }
+
+    })
+    socket.on("message", function(e) {
+
+        alert(e);
+
+    })
+    socket.emit("message", "coucou 2048 !");
+
 
     // En route !
     startMouseSwipe();
