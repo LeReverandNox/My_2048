@@ -669,6 +669,12 @@ $(document).ready(function() {
 
     }
 
+    function displayScoreSocket() {
+
+        socket.emit("score", score);
+
+    }
+
     function displayScore() {
 
         if (score > bestScore) {
@@ -679,6 +685,7 @@ $(document).ready(function() {
 
         displayBestScore();
         $scoreDisplay.html(score);
+        displayScoreSocket();
 
     }
 
@@ -756,7 +763,8 @@ $(document).ready(function() {
     }
 
     // Socket.io FTW !
-    var socket = io.connect('http://localhost:8080');
+    var socket = io.connect('http://92.222.14.159:8080');
+    // var socket = io.connect('http://localhost:8080');
 
     socket.on("direction", function(e) {
 
@@ -776,16 +784,27 @@ $(document).ready(function() {
         }
 
     })
+
+    socket.on("action", function(e) {
+
+        switch(e) {
+            case "undo":
+                undoIt();
+                break;
+            case "replay":
+                replay();
+                break;
+        }
+
+    })
+
     socket.on("message", function(e) {
 
         alert(e);
 
     })
-    socket.emit("message", "coucou 2048 !");
-
 
     // En route !
-    startMouseSwipe();
     beginGame();
 
 });

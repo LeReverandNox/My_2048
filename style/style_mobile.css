@@ -71,8 +71,26 @@ body {
 
 .header_score, .header_score_title, .header_best_score, .header_best_score_title {
 
-    display: inline-block;
+    /*display: inline-block;*/
 
+}
+.header_score_title {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+.header_score {
+
+    padding: 15px 10px;
+    background: #8f7a66;
+    color: #f9f6f2;
+    display: inline-block;
+    border-radius: 5px;
+    font-size: 2em;
+}
+.buttons {
+    width: 850px;
+    margin: 0 auto;
+    display: block
 }
 .replay_button, .undo_button {
     display: inline-block;
@@ -85,15 +103,19 @@ body {
     cursor: pointer;
     text-align: center;
     margin-top: 15px;
-    width: 35%;
-}
+    width: 45%;
+    height: 100px;
+    font-size: 4em;
+    line-height: 100px;
+   -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+   }
 .replay_button {
     background: #f65e3b;
-;
 }
 .undo_button {
     background: #8f7a66;
-
 }
 
 .main_section {

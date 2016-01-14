@@ -25,6 +25,19 @@ io.sockets.on('connection', function (socket) {
 
     });
 
+    socket.on("score", function(score) {
+
+        socket.broadcast.emit("score", score);
+
+    })
+
+    socket.on("action", function(action) {
+
+        console.log("On effectue l'action : \"" + action + "\"");
+        socket.broadcast.emit("action", action);
+
+    })
+
 });
 
 
