@@ -18,9 +18,13 @@ io.sockets.on('connection', function (socket) {
     console.log('Un client est connecté !');
     // socket.emit("message", "Welcome Home !");
 
+
+    var date = new Date(i * 1000).toLocaleDateString();
+    var heure = new Date(i * 1000).toLocaleTimeString();
+
     socket.on("direction", function(direction) {
 
-        console.log("On envoie la direction \"" + direction + "\" au 2048");
+        console.log("[" + date + " : " + heure +  "] : On envoie la direction \"" + direction + "\" au 2048");
         socket.broadcast.emit("direction", direction);
 
     });
@@ -33,7 +37,7 @@ io.sockets.on('connection', function (socket) {
 
     socket.on("action", function(action) {
 
-        console.log("On effectue l'action : \"" + action + "\"");
+        console.log("[" + date + " : " + heure +  "] :On effectue l'action : \"" + action + "\"");
         socket.broadcast.emit("action", action);
 
     })
