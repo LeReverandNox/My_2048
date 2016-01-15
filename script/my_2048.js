@@ -671,7 +671,7 @@ $(document).ready(function() {
 
     function displayScoreSocket() {
 
-        socket.emit("score", score);
+        socket.emit("score", {score: score, token: token});
 
     }
 
@@ -763,8 +763,23 @@ $(document).ready(function() {
     }
 
     // Socket.io FTW !
-    var socket = io.connect('http://92.222.14.159:8080');
-    // var socket = io.connect('http://localhost:8080');
+
+    function makeToken()
+    {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for( var i=0; i < 5; i++ )
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return text;
+    }
+
+    var token = makeToken();
+    $(".token").html(token);
+
+    // var socket = io('http://localhost:8080', {query: "token=" + token});
+    var socket = io('http://92.222.14.159:8080', {query: "token=" + token});
 
     socket.on("direction", function(e) {
 
@@ -785,7 +800,7 @@ $(document).ready(function() {
 
     })
 
-    socket.on("action", function(e) {
+    socket.on("button", function(e) {
 
         switch(e) {
             case "undo":

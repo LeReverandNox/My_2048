@@ -74,6 +74,18 @@ body {
     /*display: inline-block;*/
 
 }
+
+.prompt_token {
+    margin-top: 15px;
+    line-height: 60px;
+    font-size: 50px;
+    width: 400px;
+}
+.prompt_button {
+    height: 65px;
+    font-size: 50px;
+}
+
 .header_score_title {
     font-size: 1.5em;
     margin-bottom: 5px;

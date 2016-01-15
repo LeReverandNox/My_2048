@@ -8,66 +8,96 @@ $(document).ready(function() {
     var reset = document.getElementsByClassName("buttons")[0].children[1];
     var undoHammer = new Hammer(undo);
     var resetHammer = new Hammer(reset);
-    var socket = io.connect('92.222.14.159:8080');
-    // var socket = io.connect('192.168.2.5:8080');
-
-    console.log(undo);
-
-    socket.on("message", function(e) {
-
-        alert(e);
-
-    })
-
-    socket.on("score", function(score) {
-
-        $(".header_score").html(score);
-
-    })
 
 
 
-function startSwipe() {
+    function startSwipe() {
 
-    hammertime.on("swipeup", function(e) {
+        hammertime.on("swipeup", function(e) {
 
-        socket.emit("direction", "up");
+            socket.emit('move', {direction: 'up', token: token});
+
+        });
+        hammertime.on("swipeleft", function(e) {
+
+            socket.emit('move', {direction: 'left', token: token});
+
+        });
+        hammertime.on("swipedown", function(e) {
+
+            socket.emit('move', {direction: 'down', token: token});
+
+        });
+        hammertime.on("swiperight", function(e) {
+
+           socket.emit('move', {direction: 'right', token: token});
+
+       });
+
+    }
+
+    function startButtons() {
+
+        undoHammer.on("tap", function(e) {
+
+            socket.emit("button", {button: "undo", token: token});
+
+        })
+
+        resetHammer.on("tap", function(e) {
+
+            socket.emit("button", {button: "replay", token: token});
+
+        })
+
+    }
+
+
+    var token;
+    var tmp_token;
+    var socket ;
+    var $promptButton = $(".prompt_button");
+    var $promptToken = $(".prompt_token");
+
+    $promptButton.on("click", function(e) {
+
+        e.preventDefault();
+
+        tmp_token = $promptToken.val();
+        // socket = io('10.34.1.222:8080',  {query: 'clientType=mobile&token=' + tmp_token});
+        socket = io('92.222.14.159:8080',  {query: 'clientType=mobile&token=' + tmp_token});
+
+        socket.on("token_return", function(tok) {
+
+            token = tok;
+            alert("Vous êtes bien connecté à la partie !");
+
+        });
+
+        socket.on("erreur", function(erreur) {
+
+            alert(erreur);
+
+        });
+
+        socket.on("score", function(score) {
+
+            $(".header_score").html(score);
+
+        });
+
+        setTimeout(function() {
+
+            if (token !== undefined) {
+
+                startSwipe();
+                startButtons();
+
+            };
+
+        }, 1000)
 
     });
-    hammertime.on("swipeleft", function(e) {
 
-        socket.emit("direction", "left");
 
-    });
-    hammertime.on("swipedown", function(e) {
-
-        socket.emit("direction", "down");
-
-    });
-    hammertime.on("swiperight", function(e) {
-
-        socket.emit("direction", "right");
-
-    });
-
-}
-
-function startButtons() {
-
-    undoHammer.on("tap", function(e) {
-
-        socket.emit("action", "undo");
-
-    })
-
-    resetHammer.on("tap", function(e) {
-
-        socket.emit("action", "replay");
-
-    })
-
-}
-
-startSwipe();
-startButtons();
-})
+        })

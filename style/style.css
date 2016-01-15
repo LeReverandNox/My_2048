@@ -303,7 +303,7 @@ body {
 .main_footer p:last-child {
     border-bottom: none;
 }
-.otp {
+.token {
   display: block;
   width: 100%;
   text-align: center;
