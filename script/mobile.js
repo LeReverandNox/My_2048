@@ -30,9 +30,9 @@ $(document).ready(function() {
         });
         hammertime.on("swiperight", function(e) {
 
-           socket.emit('move', {direction: 'right', token: token});
+         socket.emit('move', {direction: 'right', token: token});
 
-       });
+     });
 
     }
 
@@ -100,4 +100,4 @@ $(document).ready(function() {
     });
 
 
-        })
+})
