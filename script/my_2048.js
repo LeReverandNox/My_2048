@@ -444,6 +444,7 @@ $(document).ready(function() {
                             // dontTouch[y + 1][x] = 1;
                             grid[y + 1][x] = 0;
                             grid[y][x] *= 2;
+                            spawn = true;
 
                         }
 
@@ -470,6 +471,8 @@ $(document).ready(function() {
                             // dontTouch[y - 1][x] = 1;
                             grid[y][x] *= 2;
                             grid[y - 1][x] = 0;
+                            spawn = true;
+
                         }
 
                     }
@@ -495,6 +498,7 @@ $(document).ready(function() {
                             // dontTouch[y][x - 1] = 1;
                             grid[y][x] *= 2;
                             grid[y][x - 1] = 0;
+                            spawn = true;
 
                         }
 
@@ -521,6 +525,7 @@ $(document).ready(function() {
                             // dontTouch[y][x + 1] = 1;
                             grid[y][x] *= 2;
                             grid[y][x + 1] = 0;
+                            spawn = true;
 
                         }
 
