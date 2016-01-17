@@ -65,14 +65,16 @@ $(document).ready(function() {
         $grid.css({width: WH,
                         height : WH});
         $(".main_wrapper").css({width: WH + 30});
-        $(".click_button_up").css({});
-        $(".click_button_left").css({});
-        $(".click_button_right").css({});
-        $(".click_button_down").css({});
+        $(".click_button_up").css({left: (WH/2) - 10});
+        $(".click_button_left").css({top: (WH/2) - 10});
+        $(".click_button_right").css({top: (WH/2) - 10});
+        $(".click_button_down").css({left: (WH/2) - 10});
     }
 
 
     function beginGame() {
+
+        cleanMessages();
 
         if (localStorage.getItem("Size2048") !== null) {
 
@@ -168,7 +170,6 @@ $(document).ready(function() {
         undo = [];
         $(document).off();
         $(".click_button").off();
-        cleanMessages();
         beginGame();
 
     }
