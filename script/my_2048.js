@@ -61,9 +61,9 @@ $(document).ready(function() {
         var WH = 119 * sizeGrid;
 
         $gridHolder.css({width: WH,
-                        height : WH});
+            height : WH});
         $grid.css({width: WH,
-                        height : WH});
+            height : WH});
         $(".main_wrapper").css({width: WH + 30});
         $(".click_button_up").css({left: (WH/2) - 10});
         $(".click_button_left").css({top: (WH/2) - 10});
@@ -74,6 +74,9 @@ $(document).ready(function() {
 
     function beginGame() {
 
+        $(document).off();
+        $(".click_button").off();
+        $gridHolder.off();
         cleanMessages();
 
         if (localStorage.getItem("Size2048") !== null) {
@@ -118,6 +121,7 @@ $(document).ready(function() {
         displayScore();
         startKeyboard();
         startClicks();
+        startMouseSwipe();
         updateDisplayGrid();
 
         if (!possibleMove()) {
@@ -132,6 +136,7 @@ $(document).ready(function() {
 
         $(document).off();
         $(".click_button").off();
+        $gridHolder.off();
         $(document).keydown(function(e) {
 
             if (e.which === 82) {
@@ -168,8 +173,7 @@ $(document).ready(function() {
         cleanBackupGrid();
         cleanBackupScore();
         undo = [];
-        $(document).off();
-        $(".click_button").off();
+
         beginGame();
 
     }
@@ -255,6 +259,7 @@ $(document).ready(function() {
                 cleanMessages();
                 startKeyboard();
                 startClicks();
+                startMouseSwipe();
 
             };
 
@@ -678,15 +683,15 @@ $(document).ready(function() {
 
                     return true;
 
-                }
-
             }
 
         }
 
-        return false;
-
     }
+
+    return false;
+
+}
 
 
 
@@ -889,7 +894,51 @@ $(document).ready(function() {
     // SWIPE SOURIS
     function startMouseSwipe() {
 
+        var moveX = [], moveY = [], delay = [];
+        var treshold = 150, duration = 200
 
+        $gridHolder.on("mousedown", function(e) {
+
+            moveX = [], moveY = [], delay = [];
+            delay.push(e.timeStamp);
+
+            $gridHolder.on("mousemove", function(e1) {
+
+                moveX.push(e1.clientX);
+                moveY.push(e1.clientY);
+
+
+            });
+
+        });
+        $gridHolder.on("mouseup", function(e2) {
+
+            delay.push(e2.timeStamp);
+
+            $gridHolder.off("mousemove");
+
+            if (delay[1] - delay[0] <= duration) {
+
+                if (moveX[moveX.length-1] - moveX[0] >= treshold) {
+
+                    move("right");
+
+                } else if (moveX[moveX.length-1] - moveX[0] <= -treshold) {
+
+                    move("left");
+
+                } else if (moveY[moveY.length-1] - moveY[0] >= treshold) {
+
+                    move("down");
+
+                } else if (moveY[moveY.length-1] - moveY[0] <= -treshold) {
+
+                    move("up");
+
+                }
+            };
+
+        });
 
     }
 
@@ -916,17 +965,17 @@ $(document).ready(function() {
 
         switch(e) {
             case "up":
-                move("up");
-                break;
+            move("up");
+            break;
             case "left":
-                move("left");
-                break;
+            move("left");
+            break;
             case "right":
-                move("right");
-                break;
+            move("right");
+            break;
             case "down":
-                move("down");
-                break;
+            move("down");
+            break;
         }
 
     })
@@ -935,11 +984,11 @@ $(document).ready(function() {
 
         switch(e) {
             case "undo":
-                undoIt();
-                break;
+            undoIt();
+            break;
             case "replay":
-                replay();
-                break;
+            replay();
+            break;
         }
 
     })
