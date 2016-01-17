@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-    var sizeGrid = 4;
+    var sizeGrid = 6;
     var grid = [];
     var undo = [];
     var spawned = [];

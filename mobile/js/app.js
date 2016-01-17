@@ -109,7 +109,7 @@ socket.on("button", function(data) {
 
 socket.on("score", function(data) {
 
-    games[data.token].score(data.button);
+    games[data.token].score(data.score);
 
 })
 
