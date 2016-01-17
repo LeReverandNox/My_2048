@@ -1,9 +1,7 @@
 $(document).ready(function() {
 
-    var grid = [[2, 2, 2, 2],
-    [2, 2, 0, 0],
-    [2, 2, 2, 0],
-    [2, 0, 0, 0]];
+    var sizeGrid = 4;
+    var grid = [];
     var undo = [];
     var spawned = [];
     var merged = [];
@@ -15,10 +13,59 @@ $(document).ready(function() {
 
     var $mainSection = $(".main_section");
     var $gridHolder = $(".grid_holder");
-    var $gridCells= $(".grid");
+    var $grid;
     var $scoreDisplay = $(".header_score");
     var $bestScoreDisplay = $(".header_best_score");
     var $twitterLink;
+
+
+    function generateMarkupAndGrid(size) {
+
+        if (size < 4 || size > 6 ) {
+
+            sizeGrid = 4;
+
+        };
+
+        var i, j,
+        row = [],
+        $gridRow,
+        $gridCell;
+
+
+        $grid = $("<div class='grid'></div>");
+        for(i = 0 ; i < sizeGrid ; i++) {
+
+            $gridRow = $("<div class='grid_row'></div>");
+            row = [];
+
+            for(j = 0 ; j < sizeGrid ; j++) {
+
+                $gridCell = $("<div class='grid_cell'></div>")
+                $gridCell.appendTo($gridRow);
+                row.push(0);
+
+            }
+
+            $gridRow.appendTo($grid);
+            grid.push(row);
+        }
+
+        $grid.appendTo($gridHolder);
+
+        // Un peu de CSS
+        var WH = 119 * sizeGrid;
+
+        $gridHolder.css({width: WH,
+                        height : WH});
+        $grid.css({width: WH,
+                        height : WH});
+        $(".main_wrapper").css({width: WH + 30});
+        $(".click_button_up").css({});
+        $(".click_button_left").css({});
+        $(".click_button_right").css({});
+        $(".click_button_down").css({});
+    }
 
 
     function beginGame() {
@@ -32,8 +79,19 @@ $(document).ready(function() {
 
         } else {
 
-            grid = JSON.parse(localStorage.getItem("Backup2048"));
-            score = parseInt(localStorage.getItem("BackupScore2048"));
+            var restore = JSON.parse(localStorage.getItem("Backup2048"));
+
+            if (restore.length !== sizeGrid) {
+
+                cleanBackupGrid();
+                beginGame();
+
+            } else {
+
+                grid = JSON.parse(localStorage.getItem("Backup2048"));
+                score = parseInt(localStorage.getItem("BackupScore2048"));
+
+            }
 
         };
 
@@ -206,9 +264,9 @@ $(document).ready(function() {
 
         var x, y;
 
-        for (y = 0; y < 4; y++) {
+        for (y = 0; y < sizeGrid; y++) {
 
-            for (x = 0; x < 4; x++) {
+            for (x = 0; x < sizeGrid; x++) {
 
                 grid[y][x] = 0;
 
@@ -222,9 +280,9 @@ $(document).ready(function() {
 
         var x, y, maybe = [];
 
-        for (y = 0; y < 4; y++) {
+        for (y = 0; y < sizeGrid; y++) {
 
-            for (x = 0; x < 4; x++) {
+            for (x = 0; x < sizeGrid; x++) {
 
                 if (grid[x][y] === 0) {
 
@@ -267,11 +325,11 @@ $(document).ready(function() {
     // AFFICHAGE
     function updateDisplayGrid() {
 
-        for(i = 0; i < 4; i++) {
+        for(i = 0; i < sizeGrid; i++) {
 
-            for(j = 0; j < 4; j++) {
+            for(j = 0; j < sizeGrid; j++) {
 
-                var $cell = $gridCells.find(".grid_row").eq(i).find(".grid_cell").eq(j);
+                var $cell = $grid.find(".grid_row").eq(i).find(".grid_cell").eq(j);
 
                 if(grid[i][j] !== 0) {
 
@@ -350,19 +408,21 @@ $(document).ready(function() {
 
         if(direction === "up") {
 
-            for(y = 0; y < 4; y++) {
+            for(y = 0; y < sizeGrid; y++) {
 
-                for(x = 0; x < 4; x++) {
+                for(x = 0; x < sizeGrid; x++) {
 
-                    if(y != 3 && grid[y][x] !== 0 && dontTouch[y][x] === 0) {
+                    if(y != (sizeGrid - 1) && grid[y][x] !== 0 /*&& dontTouch[y][x] === 0*/) {
 
                         if(grid[y + 1][x] === grid[y][x]) {
 
                             merged.push([y, x]);
                             addScore((grid[y][x]) * 2);
-                            grid[y][x] = 0;
-                            grid[y + 1][x] *= 2;
-                            dontTouch[y + 1][x] = 1;
+                            // grid[y][x] = 0;
+                            // grid[y + 1][x] *= 2;
+                            // dontTouch[y + 1][x] = 1;
+                            grid[y + 1][x] = 0;
+                            grid[y][x] *= 2;
 
                         }
 
@@ -374,19 +434,21 @@ $(document).ready(function() {
 
         } else if(direction === "down") {
 
-            for(y = 3; y >= 0; y--) {
+            for(y = sizeGrid - 1; y >= 0; y--) {
 
-                for(x = 0; x < 4; x++) {
+                for(x = 0; x < sizeGrid; x++) {
 
-                    if(y != 0 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
+                    if(y != 0 && grid[y][x] > 0 /*&& dontTouch[y][x] === 0*/) {
 
                         if(grid[y - 1][x] === grid[y][x]) {
 
                             merged.push([y, x]);
                             addScore((grid[y][x]) * 2);
-                            grid[y][x] =0;
-                            grid[y - 1][x] *= 2;
-                            dontTouch[y - 1][x] = 1;
+                            // grid[y][x] =0;
+                            // grid[y - 1][x] *= 2;
+                            // dontTouch[y - 1][x] = 1;
+                            grid[y][x] *= 2;
+                            grid[y - 1][x] = 0;
                         }
 
                     }
@@ -397,19 +459,21 @@ $(document).ready(function() {
 
         } else if(direction === "right") {
 
-            for(x = 3; x >= 0; x--) {
+            for(x = sizeGrid - 1; x >= 0; x--) {
 
-                for(y = 0; y < 4; y++) {
+                for(y = 0; y < sizeGrid; y++) {
 
-                    if(x !== 0 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
+                    if(x !== 0 && grid[y][x] > 0 /*&& dontTouch[y][x] === 0*/) {
 
                         if(grid[y][x - 1] === grid[y][x]) {
 
                             merged.push([y, x]);
                             addScore((grid[y][x]) * 2);
-                            grid[y][x] = 0;
-                            grid[y][x - 1] *= 2;
-                            dontTouch[y][x - 1] = 1;
+                            // grid[y][x] = 0;
+                            // grid[y][x - 1] *= 2;
+                            // dontTouch[y][x - 1] = 1;
+                            grid[y][x] *= 2;
+                            grid[y][x - 1] = 0;
 
                         }
 
@@ -421,19 +485,21 @@ $(document).ready(function() {
 
         } else if(direction === "left") {
 
-            for(x = 0; x < 4; x++) {
+            for(x = 0; x < sizeGrid; x++) {
 
-                for(y = 0; y < 4; y++) {
+                for(y = 0; y < sizeGrid; y++) {
 
-                    if(x !== 3 && grid[y][x] > 0 && dontTouch[y][x] === 0) {
+                    if(x !== (sizeGrid - 1) && grid[y][x] > 0 /*&& dontTouch[y][x] === 0*/) {
 
                         if(grid[y][x + 1] === grid[y][x]) {
 
                             merged.push([y, x]);
                             addScore((grid[y][x]) * 2);
-                            grid[y][x] = 0;
-                            grid[y][x + 1] *= 2;
-                            dontTouch[y][x + 1] = 1;
+                            // grid[y][x] = 0;
+                            // grid[y][x + 1] *= 2;
+                            // dontTouch[y][x + 1] = 1;
+                            grid[y][x] *= 2;
+                            grid[y][x + 1] = 0;
 
                         }
 
@@ -466,9 +532,9 @@ $(document).ready(function() {
 
         if(direction === "up") {
 
-            for(y = 3; y >= 0; y--) {
+            for(y = sizeGrid - 1; y >= 0; y--) {
 
-                for(x = 0; x < 4; x++) {
+                for(x = 0; x < sizeGrid; x++) {
 
                     if(y != 0 && grid[y][x] !== 0 && grid[y - 1][x] === 0) {
 
@@ -477,6 +543,15 @@ $(document).ready(function() {
                         spawn = true;
                         removeSpaces(direction);
 
+                        for (var k = 0 ; k < merged.length ; k++) {
+
+                            if (merged[k][0] === y && merged[k][1] === x) {
+
+                                merged[k][0] -= 1;
+
+                            };
+
+                        };
                     }
 
                 }
@@ -485,16 +560,26 @@ $(document).ready(function() {
 
         } else if(direction === "right") {
 
-            for(x = 0; x < 4; x++) {
+            for(x = 0; x < sizeGrid; x++) {
 
-                for(y = 0; y < 4; y++) {
+                for(y = 0; y < sizeGrid; y++) {
 
-                    if(x != 3 && grid[y][x] !== 0 && grid[y][x+1] === 0) {
+                    if(x != sizeGrid - 1 && grid[y][x] !== 0 && grid[y][x+1] === 0) {
 
                         grid[y][x + 1] = grid[y][x];
                         grid[y][x] = 0;
                         spawn = true;
                         removeSpaces(direction);
+
+                        for (var k = 0 ; k < merged.length ; k++) {
+
+                            if (merged[k][0] === y && merged[k][1] === x) {
+
+                                merged[k][1] += 1;
+
+                            };
+
+                        };
 
                     }
 
@@ -504,9 +589,9 @@ $(document).ready(function() {
 
         } else if(direction === "left") {
 
-            for(x = 3; x >= 0; x--) {
+            for(x = sizeGrid - 1; x >= 0; x--) {
 
-                for(y = 3; y >= 0; y--) {
+                for(y = sizeGrid - 1; y >= 0; y--) {
 
                     if(x != 0 && grid[y][x] !== 0 && grid[y][x - 1] === 0) {
 
@@ -515,6 +600,15 @@ $(document).ready(function() {
                         spawn = true;
                         removeSpaces(direction);
 
+                        for (var k = 0 ; k < merged.length ; k++) {
+
+                            if (merged[k][0] === y && merged[k][1] === x) {
+
+                                merged[k][1] -= 1;
+
+                            };
+
+                        };
                     }
 
                 }
@@ -523,16 +617,26 @@ $(document).ready(function() {
 
         } else if(direction === "down") {
 
-            for(y = 0; y < 4; y++) {
+            for(y = 0; y < sizeGrid; y++) {
 
-                for(x = 3; x >= 0; x--) {
+                for(x = sizeGrid - 1; x >= 0; x--) {
 
-                    if(y != 3 && grid[y][x] !== 0 && grid[y + 1][x] === 0) {
+                    if(y != sizeGrid - 1 && grid[y][x] !== 0 && grid[y + 1][x] === 0) {
 
                         grid[y + 1][x] = grid[y][x];
                         grid[y][x] = 0;
                         spawn = true;
                         removeSpaces(direction);
+
+                        for (var k = 0 ; k < merged.length ; k++) {
+
+                            if (merged[k][0] === y && merged[k][1] === x) {
+
+                                merged[k][0] += 1;
+
+                            };
+
+                        };
 
                     }
 
@@ -546,9 +650,9 @@ $(document).ready(function() {
 
     function possibleMove() {
 
-        for(y = 0; y < 4; y++) {
+        for(y = 0; y < sizeGrid; y++) {
 
-            for(x = 0; x < 4; x++) {
+            for(x = 0; x < sizeGrid; x++) {
 
                 if((grid[y + 1] !== undefined && grid[y + 1][x] === grid[y][x]) ||
                     // (grid[y - 1] !== undefined && grid[y - 1][x] === grid[y][x]) ||
@@ -820,6 +924,9 @@ $(document).ready(function() {
     })
 
     // En route !
+    generateMarkupAndGrid(sizeGrid);
     beginGame();
+
+
 
 });
