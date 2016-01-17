@@ -74,6 +74,17 @@ $(document).ready(function() {
 
     function beginGame() {
 
+        if (localStorage.getItem("Size2048") !== null) {
+
+            sizeGrid = parseInt(localStorage.getItem("Size2048"));
+            $(".difficulty").removeClass("choose");
+            $("*[data-level=" + sizeGrid + "]").addClass("choose");
+
+        };
+
+        generateMarkupAndGrid(sizeGrid);
+
+
         if (localStorage.getItem("Backup2048") == null) {
 
             resetGrid();
@@ -734,7 +745,10 @@ $(document).ready(function() {
         $(".difficulty").on("click", function(e) {
 
             sizeGrid = parseInt($(this).data("level"));
-            generateMarkupAndGrid(sizeGrid);
+            localStorage.setItem("Size2048", sizeGrid);
+            $(".difficulty").removeClass("choose");
+            $(this).addClass("choose");
+
             beginGame();
 
         });
@@ -936,7 +950,7 @@ $(document).ready(function() {
     })
 
     // En route !
-    generateMarkupAndGrid(sizeGrid);
+    // generateMarkupAndGrid(sizeGrid);
     beginGame();
 
 
