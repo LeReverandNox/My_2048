@@ -414,7 +414,8 @@ $(document).ready(function() {
     // DEPLACEMENTS
     function move(direction) {
 
-        var x, y, dontTouch = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]];
+        var x, y;
+        // var dontTouch = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]];
         spawn = false;
 
         /*
@@ -1004,10 +1005,8 @@ $(document).ready(function() {
 
     })
 
+
     // En route !
-    // generateMarkupAndGrid(sizeGrid);
     beginGame();
-
-
 
 });

@@ -54,19 +54,19 @@ body {
     font-family: sans-serif;
 }
 .main_wrapper {
-    /*width: 500px;*/
     margin: 0 auto;
 }
 
 .main_header {
     text-align: center;
-    font-size: 2em;
-    margin-bottom: 60px;
+    font-size: 1em;
+    margin-bottom: 15px;
 }
 .header_title h1 {
     font-weight: bold;
-    font-size: 3em;
-    padding-bottom: 40px;
+    font-size: 2.5em;
+    padding-top: 10px;
+    padding-bottom: 5px;
 }
 
 .header_score, .header_score_title, .header_best_score, .header_best_score_title {
@@ -76,33 +76,36 @@ body {
 }
 
 .prompt_token {
-    margin-top: 15px;
-    line-height: 60px;
-    font-size: 50px;
-    width: 400px;
+    margin-top: 5px;
+    line-height: 20px;
+    font-size: 25px;
+    width: 200px;
 }
 .prompt_button {
-    height: 65px;
-    font-size: 50px;
+    height: 34px;
+    font-size: 24px;
 }
 
 .header_score_title {
     font-size: 1.5em;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
 }
 .header_score {
 
-    padding: 15px 10px;
+    padding: 8px 2px;
     background: #8f7a66;
     color: #f9f6f2;
     display: inline-block;
     border-radius: 5px;
-    font-size: 2em;
+    font-size: 1.5em;
 }
 .buttons {
-    width: 850px;
+    /*width: 850px;*/
+    width: 370px;
     margin: 0 auto;
-    display: block
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 10px;
 }
 .replay_button, .undo_button {
     display: inline-block;
@@ -111,14 +114,12 @@ body {
     text-decoration: none;
     color: #f9f6f2;
     height: 40px;
-    line-height: 42px;
+    line-height: 40px;
     cursor: pointer;
     text-align: center;
-    margin-top: 15px;
-    width: 45%;
-    height: 100px;
-    font-size: 4em;
-    line-height: 100px;
+    margin-top: 5px;
+    width: 140px;
+    font-size: 1.5em;
    -moz-user-select: -moz-none;
    -khtml-user-select: none;
    -webkit-user-select: none;
@@ -138,23 +139,23 @@ body {
 /* GRID */
 .grid_holder {
     background: #bbada0;
-    width: 900px;
-    height: 900px;
+    width: 350px;
+    height: 350px;
     margin: 0 auto;
-    padding: 15px;
+    padding: 8px;
     border-radius: 6px;
 }
 
 .grid {
     background-image: url(../style/swipe_arrows.png);
-    width: 900px;
-    height: 900px;
+    width: 350px;
+    height: 350px;
     background-size: cover;
     background-repeat: no-repeat;
 }
 
 .grid_row {
-    margin-bottom: 15px;
+    margin-bottom: 8px;
 }
 .grid_row:after {
     content: "";
@@ -162,41 +163,13 @@ body {
     clear: both;
 }
 .grid_cell {
-    width: 213px;
-    height: 213px;
+    width: 81px;
+    height: 81px;
     float: left;
-    margin-right: 15px;
+    margin-right: 8px;
     border-radius: 3px;
     background-color: rgba(238, 228, 218, 0.35);
-    font-size: 55px;
-    text-align: center;
-    font-weight: bold;
-    line-height: 106px;
 }
 .grid_cell:last-child {
     margin-right: 0px;
-}
-
-/* FOOTER */
-.main_footer {
-    margin-top: 50px;
-    margin-bottom: 30px;
-}
-.main_footer p {
-    line-height: 25px;
-    border-bottom: 1px solid #776e65;
-    padding-bottom: 15px;
-    padding-top: 15px;
-}
-.main_footer p:first-child {
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.5em;
-    /*margin-bottom: 10px;*/
-    border-bottom: 0;
-    padding-bottom: 0;
-    padding-top: 0px;
-}
-.main_footer p:last-child {
-    border-bottom: none;
 }
