@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-    var sizeGrid = 6;
+    var sizeGrid = 4;
     var grid = [];
     var undo = [];
     var spawned = [];
@@ -32,7 +32,11 @@ $(document).ready(function() {
         $gridRow,
         $gridCell;
 
+        // Nettoyage des anciennes grilles
+        $grid = $(".grid").remove();
+        grid = [];
 
+        // C'est ti-part pour le markup
         $grid = $("<div class='grid'></div>");
         for(i = 0 ; i < sizeGrid ; i++) {
 
@@ -726,6 +730,14 @@ $(document).ready(function() {
 
     // Controls souris
     function startClicks() {
+
+        $(".difficulty").on("click", function(e) {
+
+            sizeGrid = parseInt($(this).data("level"));
+            generateMarkupAndGrid(sizeGrid);
+            beginGame();
+
+        });
 
         $(".click_button_up").on("click", function(e) {
 
