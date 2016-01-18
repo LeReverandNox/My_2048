@@ -33,14 +33,14 @@ var Display = function() {
 Game.prototype.move = function(direction) {
 
     var dateheure = horodatage();
-    console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : On envoie la direction \"" + direction + "\" à la partie " + this.token);
+    // console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : On envoie la direction \"" + direction + "\" à la partie " + this.token);
     io.to(this.deskSocket).emit("direction", direction);
 
 };
 Game.prototype.button = function(button) {
 
   var dateheure = horodatage();
-  console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : On appuie sur le bouton : \"" + button + "\" pour la partie " + this.token);
+  // console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : On appuie sur le bouton : \"" + button + "\" pour la partie " + this.token);
   io.to(this.deskSocket).emit("button", button);
 
 };
@@ -74,7 +74,7 @@ Game.prototype.displayValidation = function(num) {
 
 // Quand un client se connecte, on le note dans la console
 io.sockets.on('connection', function (socket) {
-
+    console.log("Connect");
 
     var clientType = socket.handshake.query.clientType;
     var ip = socket.handshake.address;
@@ -90,7 +90,7 @@ io.sockets.on('connection', function (socket) {
             games[token].sendToken();
             games[token].remoteValidation();
 
-            console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : Une nouvelle télécommande est connectée : " + ip + " !");
+            // console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : Une nouvelle télécommande est connectée : " + ip + " !");
 
         } else {
 
@@ -105,9 +105,9 @@ io.sockets.on('connection', function (socket) {
         // console.log(empty);
         // console.log("Voici le nouvel index : " + index);
         if (games[token] !== undefined) {
-
             var index = nextIndex();
-            console.log(games[token]);
+            console.log("Voici le socktIt pour la cellule " + index + " : " + socket.id);
+            // console.log(games[token]);
 
             var display = new Display();
             display.ip = ip;
@@ -125,7 +125,7 @@ io.sockets.on('connection', function (socket) {
             // socket.emit("init", games[token].displays.length);
             socket.emit("init", (parseInt(index) + 1));
 
-            console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : Le display " + index + " est connecté : " + ip + " !");
+            // console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : Le display " + index + " est connecté : " + ip + " !");
 
         } else {
 
@@ -137,7 +137,7 @@ io.sockets.on('connection', function (socket) {
 
         if (ip !== "::ffff:163.5.223.65" && ip !== "::ffff:10.34.1.222") {
 
-            console.log(ip + " : Cette IP n'est pas authorisée à lancer une partie");
+            // console.log(ip + " : Cette IP n'est pas authorisée à lancer une partie");
             return false;
         };
 
@@ -147,39 +147,41 @@ io.sockets.on('connection', function (socket) {
         game.token = token;
         games[token] = game;
 
-        console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : Une nouvelle partie (" + token + ") est lancée par " + ip + " !");
+        // console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : Une nouvelle partie (" + token + ") est lancée par " + ip + " !");
 
     }
 
 
     socket.on("disconnect", function() {
-
-        console.log("Un client se deco : " + socket.id);
-
-        var socketId =  socket.id;
+        console.log("Le socket  : " + socket.id + " veut se deco !");
+        console.log("Disconnect");
+        // var socketId =  socket.id;
 
         for(var index in games) {
 
             var attr = games[index];
             for(var index2 in attr.displays) {
 
-                console.log(attr.displays[index2].socket);
-                console.log("On veut delete : " + socketId);
+                console.log("Socket dispo : " + attr.displays[index2].socket);
+                // console.log("On veut delete : " + socketId);
+                console.log(index2);
+                if (attr.displays[index2].socket === socket.id) {
 
-                if (attr.displays[index2].socket === socketId) {
-
-                console.log(attr.displays[index2].num);
-                empty[attr.displays[index2].num] = true;
+                // console.log(attr.displays[index2].num);
                 // console.log(attr.displays);
                 // console.log(games);
-                console.log("On supprime son socket");
-                attr.displays.splice(index2, 1);
+                // console.log("On supprime son socket");
+                empty[attr.displays[index2].num] = true;
+                // attr.displays.splice(index2, 1);
+                delete(attr.displays[index2]);
 
             };
 
         }
 
     }
+
+    console.log(empty);
 
 });
 
@@ -243,7 +245,7 @@ function nextIndex() {
         if (empty[key] === true) {
 
             empty[key] = false;
-            console.log("L'index " + key + " est vide !");
+            // console.log("L'index " + key + " est vide !");
             return key;
 
         }
