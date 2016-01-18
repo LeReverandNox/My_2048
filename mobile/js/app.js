@@ -12,6 +12,7 @@ var server = http.createServer(function(req, res) {
 // Chargement de socket.io
 var io = require('socket.io').listen(server);
 var games = {};
+var displays = [];
 
 
 /* Classe Game et ses fonctions */
@@ -76,6 +77,13 @@ io.sockets.on('connection', function (socket) {
 
     };
 
+} else if (clientType == "display") {
+
+    displays.push(socket.id);
+
+    socket.emit("init", displays.length);
+    console.log(displays.length);
+
 } else {
 
     var token = socket.handshake.query.token;
@@ -114,6 +122,14 @@ socket.on("score", function(data) {
 })
 
 
+socket.on("display", function(data) {
+
+        console.log(data);
+        io.to(displays[data.num]).emit("display", data);
+
+});
+
+
 });
 
 function horodatage() {
@@ -126,5 +142,6 @@ function horodatage() {
     return dateheure;
 
 }
+
 
 server.listen(8080);

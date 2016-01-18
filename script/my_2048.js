@@ -350,6 +350,7 @@ $(document).ready(function() {
 
             for(j = 0; j < sizeGrid; j++) {
 
+                var cellNum = ((i * sizeGrid) + j);
                 var $cell = $grid.find(".grid_row").eq(i).find(".grid_cell").eq(j);
 
                 if(grid[i][j] !== 0) {
@@ -360,19 +361,22 @@ $(document).ready(function() {
                     $cell.addClass("tuile_" + grid[i][j]);
                     // $cell.addClass("tuile-position-" + i + "-" + j);
 
+                    socket.emit("display", {num: cellNum, cellValue: grid[i][j], cellClass: "tuile_" + grid[i][j], spawn: false, merge: false});
+
                     if (grid[i][j] === 2048) {
 
                         endGame(2048);
 
                     }
 
-                    // On gere l'animation SPAWN
+                    // On gere l'animation MERGE
                     merged.sort();
                     for (var k = 0 ; k < merged.length ; k++) {
 
                         if (merged[k][0] === i && merged[k][1] === j) {
 
                             $cell.addClass("merge");
+                            socket.emit("display", {num: cellNum, cellValue: grid[i][j], cellClass: "tuile_" + grid[i][j], spawn: false, merge: true});
 
                         };
 
@@ -385,6 +389,7 @@ $(document).ready(function() {
                         if (spawned[k][0] === i && spawned[k][1] === j) {
 
                             $cell.addClass("spawn");
+                            socket.emit("display", {num: cellNum, cellValue: grid[i][j], cellClass: "tuile_" + grid[i][j], spawn: true, merge: false});
 
                         };
 
@@ -396,6 +401,8 @@ $(document).ready(function() {
                     $cell.html("");
                     $cell.removeClass();
                     $cell.addClass("grid_cell");
+
+                    socket.emit("display", {num: cellNum, cellValue: "", cellClass: ""});
 
                 }
 
