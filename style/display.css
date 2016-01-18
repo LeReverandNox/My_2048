@@ -117,34 +117,29 @@ html, body {
     background: #edcf72;
     color: #f9f6f2;
     box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.2381), inset 0 0 0 1px rgba(255, 255, 255, 0.14286);
-    font-size: 45px;
 }
 
 .tuile_256 {
     background: #edcc61;
     color: #f9f6f2;
     box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.31746), inset 0 0 0 1px rgba(255, 255, 255, 0.19048);
-    font-size: 45px;
 }
 
 .tuile_512 {
     background: #edc850;
     color: #f9f6f2;
     box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.55556), inset 0 0 0 1px rgba(255, 255, 255, 0.33333);
-    font-size: 45px;
 }
 
 .tuile_1024 {
     background: #edc53f;
     color: #f9f6f2;
-    font-size: 35px;
     box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.55556), inset 0 0 0 1px rgba(255, 255, 255, 0.33333);
 }
 
 .tuile_2048 {
     background: #edc22e;
     color: #f9f6f2;
-    font-size: 35px;
     box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0.55556), inset 0 0 0 1px rgba(255, 255, 255, 0.33333);
 }
 

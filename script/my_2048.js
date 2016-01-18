@@ -361,7 +361,7 @@ $(document).ready(function() {
                     $cell.addClass("tuile_" + grid[i][j]);
                     // $cell.addClass("tuile-position-" + i + "-" + j);
 
-                    socket.emit("display", {num: cellNum, cellValue: grid[i][j], cellClass: "tuile_" + grid[i][j], spawn: false, merge: false});
+                    socket.emit("display", {token: token, num: cellNum, cellValue: grid[i][j], cellClass: "tuile_" + grid[i][j], spawn: false, merge: false});
 
                     if (grid[i][j] === 2048) {
 
@@ -376,7 +376,7 @@ $(document).ready(function() {
                         if (merged[k][0] === i && merged[k][1] === j) {
 
                             $cell.addClass("merge");
-                            socket.emit("display", {num: cellNum, cellValue: grid[i][j], cellClass: "tuile_" + grid[i][j], spawn: false, merge: true});
+                            socket.emit("display", {token: token, num: cellNum, cellValue: grid[i][j], cellClass: "tuile_" + grid[i][j], spawn: false, merge: true});
 
                         };
 
@@ -389,7 +389,7 @@ $(document).ready(function() {
                         if (spawned[k][0] === i && spawned[k][1] === j) {
 
                             $cell.addClass("spawn");
-                            socket.emit("display", {num: cellNum, cellValue: grid[i][j], cellClass: "tuile_" + grid[i][j], spawn: true, merge: false});
+                            socket.emit("display", {token: token, num: cellNum, cellValue: grid[i][j], cellClass: "tuile_" + grid[i][j], spawn: true, merge: false});
 
                         };
 
@@ -402,7 +402,7 @@ $(document).ready(function() {
                     $cell.removeClass();
                     $cell.addClass("grid_cell");
 
-                    socket.emit("display", {num: cellNum, cellValue: "", cellClass: ""});
+                    socket.emit("display", {token: token, num: cellNum, cellValue: "", cellClass: ""});
 
                 }
 
@@ -908,7 +908,7 @@ $(document).ready(function() {
     function startMouseSwipe() {
 
         var moveX = [], moveY = [], delay = [];
-        var treshold = 150, duration = 200
+        var treshold = 150, duration = 1000
 
         $gridHolder.on("mousedown", function(e) {
 
@@ -960,7 +960,8 @@ $(document).ready(function() {
     function makeToken()
     {
         var text = "";
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var possible = "0123456789";
+        // var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
         for( var i=0; i < 5; i++ )
             text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -971,8 +972,8 @@ $(document).ready(function() {
     var token = makeToken();
     $(".token").html(token);
 
-    // var socket = io('http://localhost:8080', {query: "token=" + token});
-    var socket = io('http://92.222.14.159:8080', {query: "token=" + token});
+    var socket = io('http://10.34.1.222:8080', {query: "token=" + token});
+    // var socket = io('http://92.222.14.159:8080', {query: "token=" + token});
 
     socket.on("direction", function(e) {
 

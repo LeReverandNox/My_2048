@@ -1,6 +1,5 @@
 var http = require('http');
 var fs = require('fs');
-
 // Chargement du fichier index.html affiché au client
 var server = http.createServer(function(req, res) {
     fs.readFile('./index.html', 'utf-8', function(error, content) {
@@ -13,6 +12,7 @@ var server = http.createServer(function(req, res) {
 var io = require('socket.io').listen(server);
 var games = {};
 var displays = [];
+var empty = [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true];
 
 
 /* Classe Game et ses fonctions */
@@ -21,7 +21,13 @@ var Game = function() {
     this.mobileSocket;
     this.deskSocket;
     this.token;
+    this.displays = [];
 
+}
+var Display = function() {
+    this.ip;
+    this.socket;
+    this.num;
 }
 
 Game.prototype.move = function(direction) {
@@ -48,9 +54,20 @@ Game.prototype.sendToken = function() {
     io.to(this.mobileSocket).emit("token_return", this.token);
 
 }
+Game.prototype.sendTokenDisplay = function(num) {
+
+    io.to(this.displays[num].socket).emit("token_return", this.token);
+
+}
+
 Game.prototype.remoteValidation = function() {
 
     io.to(this.deskSocket).emit("message", "Une télécommande est à présent connectée");
+
+}
+Game.prototype.displayValidation = function(num) {
+
+    io.to(this.displays[num].socket).emit("message", "Le display No " + num + "est connecté");
 
 }
 
@@ -59,75 +76,151 @@ Game.prototype.remoteValidation = function() {
 io.sockets.on('connection', function (socket) {
 
 
- var clientType = socket.handshake.query.clientType;
-
- if(clientType == 'mobile') {
-
+    var clientType = socket.handshake.query.clientType;
+    var ip = socket.handshake.address;
     var token = socket.handshake.query.token;
+    var dateheure = horodatage();
 
-    if (games[token] !== undefined) {
 
-        games[token].mobileSocket = socket.id;
-        games[token].sendToken();
-        games[token].remoteValidation();
+    if(clientType == 'mobile') {
+
+        if (games[token] !== undefined) {
+
+            games[token].mobileSocket = socket.id;
+            games[token].sendToken();
+            games[token].remoteValidation();
+
+            console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : Une nouvelle télécommande est connectée : " + ip + " !");
+
+        } else {
+
+            socket.emit("erreur", "Cette partie n'existe pas !");
+
+        };
+
+    } else if (clientType == "display") {
+
+        // console.log(empty);
+        // var index = nextIndex();
+        // console.log(empty);
+        // console.log("Voici le nouvel index : " + index);
+        if (games[token] !== undefined) {
+
+            var index = nextIndex();
+            console.log(games[token]);
+
+            var display = new Display();
+            display.ip = ip;
+            display.socket = socket.id;
+            display.num = index;
+
+            // games[token].displays.push(display);
+            games[token].displays[index] = display;
+
+            // index = games[token].displays.length - 1;
+            // index = index - 1;
+
+            games[token].sendTokenDisplay(index);
+            games[token].displayValidation(index);
+            // socket.emit("init", games[token].displays.length);
+            socket.emit("init", (parseInt(index) + 1));
+
+            console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : Le display " + index + " est connecté : " + ip + " !");
+
+        } else {
+
+            socket.emit("erreur", "Cette partie n'existe pas !");
+
+        };
 
     } else {
 
-        socket.emit("erreur", "Cette partie n'éxiste pas !");
+        if (ip !== "::ffff:163.5.223.65" && ip !== "::ffff:10.34.1.222") {
 
-    };
+            console.log(ip + " : Cette IP n'est pas authorisée à lancer une partie");
+            return false;
+        };
 
-} else if (clientType == "display") {
+        var game = new Game();
 
-    displays.push(socket.id);
+        game.deskSocket = socket.id;
+        game.token = token;
+        games[token] = game;
 
-    socket.emit("init", displays.length);
-    console.log(displays.length);
+        console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : Une nouvelle partie (" + token + ") est lancée par " + ip + " !");
 
-} else {
-
-    var token = socket.handshake.query.token;
-    var game = new Game();
-
-    game.deskSocket = socket.id;
-    game.token = token;
-    games[token] = game;
-}
-
-console.log(games);
+    }
 
 
-/* Log de connection */
-var dateheure = horodatage();
-console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : Un client est connecté !");
+    socket.on("disconnect", function() {
 
-socket.on("move", function(data) {
+        console.log("Un client se deco : " + socket.id);
 
-    games[data.token].move(data.direction);
+        var socketId =  socket.id;
 
+        for(var index in games) {
 
-});
+            var attr = games[index];
+            for(var index2 in attr.displays) {
 
-socket.on("button", function(data) {
+                console.log(attr.displays[index2].socket);
+                console.log("On veut delete : " + socketId);
 
-    games[data.token].button(data.button);
+                if (attr.displays[index2].socket === socketId) {
 
-});
+                console.log(attr.displays[index2].num);
+                empty[attr.displays[index2].num] = true;
+                // console.log(attr.displays);
+                // console.log(games);
+                console.log("On supprime son socket");
+                attr.displays.splice(index2, 1);
 
+            };
 
-socket.on("score", function(data) {
+        }
 
-    games[data.token].score(data.score);
-
-})
-
-
-socket.on("display", function(data) {
-
-        console.log(data);
-        io.to(displays[data.num]).emit("display", data);
+    }
 
 });
+
+
+
+    socket.on("move", function(data) {
+
+        games[data.token].move(data.direction);
+
+
+    });
+
+    socket.on("button", function(data) {
+
+        games[data.token].button(data.button);
+
+    });
+
+
+    socket.on("score", function(data) {
+
+        games[data.token].score(data.score);
+
+    })
+
+
+    socket.on("display", function(data) {
+
+        if (games[data.token].displays[data.num] !== undefined /*&& games[token].displays.length === 16*/) {
+
+            // console.log("...............");
+            // console.log(data);
+            io.to(games[data.token].displays[data.num].socket).emit("display", data);
+
+        } else {
+
+            // console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : Pas assez de display connecté : " + games[token].displays.length +"/16...");
+
+        }
+
+    });
 
 
 });
@@ -143,5 +236,20 @@ function horodatage() {
 
 }
 
+function nextIndex() {
+
+    for(var key in empty) {
+
+        if (empty[key] === true) {
+
+            empty[key] = false;
+            console.log("L'index " + key + " est vide !");
+            return key;
+
+        }
+
+    }
+
+}
 
 server.listen(8080);

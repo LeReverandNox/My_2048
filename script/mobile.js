@@ -64,8 +64,8 @@ $(document).ready(function() {
         e.preventDefault();
 
         tmp_token = $promptToken.val();
-        // socket = io('10.34.1.222:8080',  {query: 'clientType=mobile&token=' + tmp_token});
-        socket = io('92.222.14.159:8080',  {query: 'clientType=mobile&token=' + tmp_token});
+        socket = io('10.34.1.222:8080',  {query: 'clientType=mobile&token=' + tmp_token});
+        // socket = io('92.222.14.159:8080',  {query: 'clientType=mobile&token=' + tmp_token});
 
         socket.on("token_return", function(tok) {
 
