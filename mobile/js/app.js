@@ -101,7 +101,6 @@ io.sockets.on('connection', function (socket) {
     } else if (clientType == "display") {
 
         // console.log(empty);
-        // var index = nextIndex();
         // console.log(empty);
         // console.log("Voici le nouvel index : " + index);
         if (games[token] !== undefined) {
@@ -114,15 +113,12 @@ io.sockets.on('connection', function (socket) {
             display.socket = socket.id;
             display.num = index;
 
-            // games[token].displays.push(display);
             games[token].displays[index] = display;
-
-            // index = games[token].displays.length - 1;
-            // index = index - 1;
 
             games[token].sendTokenDisplay(index);
             games[token].displayValidation(index);
-            // socket.emit("init", games[token].displays.length);
+
+            // On envoie la valeur d'initialisation
             socket.emit("init", (parseInt(index) + 1));
 
             console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : Le display " + index + " est connecté : " + ip + " !");

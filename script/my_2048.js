@@ -972,8 +972,8 @@ $(document).ready(function() {
     var token = makeToken();
     $(".token").html(token);
 
-    var socket = io('http://10.34.1.222:8080', {query: "token=" + token});
-    // var socket = io('http://92.222.14.159:8080', {query: "token=" + token});
+    // var socket = io('http://10.34.1.222:8080', {query: "token=" + token});
+    var socket = io('http://92.222.14.159:8080', {query: "token=" + token});
 
     socket.on("direction", function(e) {
 
