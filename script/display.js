@@ -67,8 +67,8 @@ $(document).ready(function() {
 
             $display.html(data);
             $body.addClass("init");
-        });
 
+        });
 
     });
 

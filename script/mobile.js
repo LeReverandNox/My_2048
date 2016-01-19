@@ -18,16 +18,19 @@ $(document).ready(function() {
             socket.emit('move', {direction: 'up', token: token});
 
         });
+
         hammertime.on("swipeleft", function(e) {
 
             socket.emit('move', {direction: 'left', token: token});
 
         });
+
         hammertime.on("swipedown", function(e) {
 
             socket.emit('move', {direction: 'down', token: token});
 
         });
+
         hammertime.on("swiperight", function(e) {
 
          socket.emit('move', {direction: 'right', token: token});
@@ -98,6 +101,5 @@ $(document).ready(function() {
         }, 1000)
 
     });
-
 
 })
