@@ -27,7 +27,7 @@ $(document).ready(function() {
 
         };
 
-        var i, j,
+        var x, y,
         row = [],
         $gridRow,
         $gridCell;
@@ -38,12 +38,12 @@ $(document).ready(function() {
 
         // C'est ti-part pour le markup
         $grid = $("<div class='grid'></div>");
-        for(i = 0 ; i < sizeGrid ; i++) {
+        for(y = 0 ; y < sizeGrid ; y++) {
 
             $gridRow = $("<div class='grid_row'></div>");
             row = [];
 
-            for(j = 0 ; j < sizeGrid ; j++) {
+            for(x = 0 ; x < sizeGrid ; x++) {
 
                 $gridCell = $("<div class='grid_cell'></div>")
                 $gridCell.appendTo($gridRow);
@@ -53,6 +53,7 @@ $(document).ready(function() {
 
             $gridRow.appendTo($grid);
             grid.push(row);
+
         }
 
         $grid.appendTo($gridHolder);
@@ -143,12 +144,14 @@ $(document).ready(function() {
 
                 e.preventDefault();
                 replay();
+
             };
 
             if (e.which === 85) {
 
                 e.preventDefault();
                 undoIt();
+
             };
 
         });
@@ -192,14 +195,19 @@ $(document).ready(function() {
         $twitterLink = $('<a href="https://twitter.com/share" class="twitter-share-button"{count} data-text="J\'ai fait ' + score + ' points sur My_2048 ! Et toi ?" data-size="large" data-hashtags="My_2048">Tweet</a>');
 
         !function(d,s,id) {
+
             if(d.getElementById(id)) {
+
                 d.getElementById(id).remove();
+
             }
+
             var js, fjs = d.getElementsByTagName(s)[0], p=/^http:/.test(d.location) ? 'http':'https';
             js = d.createElement(s);
             js.id = id;
             js.src = p + '://platform.twitter.com/widgets.js';
             fjs.parentNode.insertBefore(js,fjs);
+
         }(document, 'script', 'twitter-wjs');
 
     }
@@ -247,6 +255,7 @@ $(document).ready(function() {
             $gameOverMessage.fadeIn(1000);
 
         }, 1000);
+
     }
 
     function undoIt() {
@@ -346,24 +355,25 @@ $(document).ready(function() {
     // AFFICHAGE
     function updateDisplayGrid() {
 
-        for(i = 0; i < sizeGrid; i++) {
+        var x, y;
 
-            for(j = 0; j < sizeGrid; j++) {
+        for(y = 0; y < sizeGrid; y++) {
 
-                var cellNum = ((i * sizeGrid) + j);
-                var $cell = $grid.find(".grid_row").eq(i).find(".grid_cell").eq(j);
+            for(x = 0; x < sizeGrid; x++) {
 
-                if(grid[i][j] !== 0) {
+                var cellNum = ((y * sizeGrid) + x);
+                var $cell = $grid.find(".grid_row").eq(y).find(".grid_cell").eq(x);
 
-                    $cell.html(grid[i][j]);
+                if(grid[y][x] !== 0) {
+
+                    $cell.html(grid[y][x]);
                     $cell.removeClass();
                     $cell.addClass("grid_cell");
-                    $cell.addClass("tuile_" + grid[i][j]);
-                    // $cell.addClass("tuile-position-" + i + "-" + j);
+                    $cell.addClass("tuile_" + grid[y][x]);
 
-                    socket.emit("display", {token: token, num: cellNum, cellValue: grid[i][j], cellClass: "tuile_" + grid[i][j], spawn: false, merge: false});
+                    socket.emit("display", {token: token, num: cellNum, cellValue: grid[y][x], cellClass: "tuile_" + grid[y][x], spawn: false, merge: false});
 
-                    if (grid[i][j] === 2048) {
+                    if (grid[y][x] === 2048) {
 
                         endGame(2048);
 
@@ -373,10 +383,10 @@ $(document).ready(function() {
                     merged.sort();
                     for (var k = 0 ; k < merged.length ; k++) {
 
-                        if (merged[k][0] === i && merged[k][1] === j) {
+                        if (merged[k][0] === y && merged[k][1] === x) {
 
                             $cell.addClass("merge");
-                            socket.emit("display", {token: token, num: cellNum, cellValue: grid[i][j], cellClass: "tuile_" + grid[i][j], spawn: false, merge: true});
+                            socket.emit("display", {token: token, num: cellNum, cellValue: grid[y][x], cellClass: "tuile_" + grid[y][x], spawn: false, merge: true});
 
                         };
 
@@ -386,10 +396,10 @@ $(document).ready(function() {
                     spawned.sort();
                     for (var k = 0 ; k < spawned.length ; k++) {
 
-                        if (spawned[k][0] === i && spawned[k][1] === j) {
+                        if (spawned[k][0] === y && spawned[k][1] === x) {
 
                             $cell.addClass("spawn");
-                            socket.emit("display", {token: token, num: cellNum, cellValue: grid[i][j], cellClass: "tuile_" + grid[i][j], spawn: true, merge: false});
+                            socket.emit("display", {token: token, num: cellNum, cellValue: grid[y][x], cellClass: "tuile_" + grid[y][x], spawn: true, merge: false});
 
                         };
 
@@ -413,6 +423,7 @@ $(document).ready(function() {
 
         spawned = [];
         merged = [];
+
     }
 
 
@@ -422,7 +433,6 @@ $(document).ready(function() {
     function move(direction) {
 
         var x, y;
-        // var dontTouch = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]];
         spawn = false;
 
         /*
@@ -437,24 +447,17 @@ $(document).ready(function() {
 
         if(direction === "up") {
 
-            for(y = 0; y < sizeGrid; y++) {
+            for(x = 0; x < sizeGrid; x++) {
 
-                for(x = 0; x < sizeGrid; x++) {
+                for(y = 0; y < sizeGrid; y++) {
 
-                    if(y != (sizeGrid - 1) && grid[y][x] !== 0 /*&& dontTouch[y][x] === 0*/) {
-
-                        if(grid[y + 1][x] === grid[y][x]) {
+                    if(y != (sizeGrid - 1) && grid[y][x] !== 0 && grid[y + 1][x] === grid[y][x]) {
 
                             merged.push([y, x]);
                             addScore((grid[y][x]) * 2);
-                            // grid[y][x] = 0;
-                            // grid[y + 1][x] *= 2;
-                            // dontTouch[y + 1][x] = 1;
                             grid[y + 1][x] = 0;
                             grid[y][x] *= 2;
                             spawn = true;
-
-                        }
 
                     }
 
@@ -464,24 +467,17 @@ $(document).ready(function() {
 
         } else if(direction === "down") {
 
-            for(y = sizeGrid - 1; y >= 0; y--) {
+            for(x = 0; x < sizeGrid; x++) {
 
-                for(x = 0; x < sizeGrid; x++) {
+                for(y = sizeGrid - 1; y >= 0; y--) {
 
-                    if(y != 0 && grid[y][x] > 0 /*&& dontTouch[y][x] === 0*/) {
+                    if(y != 0 && grid[y][x] > 0 && grid[y - 1][x] === grid[y][x]) {
 
-                        if(grid[y - 1][x] === grid[y][x]) {
-
-                            merged.push([y, x]);
-                            addScore((grid[y][x]) * 2);
-                            // grid[y][x] =0;
-                            // grid[y - 1][x] *= 2;
-                            // dontTouch[y - 1][x] = 1;
-                            grid[y][x] *= 2;
-                            grid[y - 1][x] = 0;
-                            spawn = true;
-
-                        }
+                        merged.push([y, x]);
+                        addScore((grid[y][x]) * 2);
+                        grid[y][x] *= 2;
+                        grid[y - 1][x] = 0;
+                        spawn = true;
 
                     }
 
@@ -491,24 +487,17 @@ $(document).ready(function() {
 
         } else if(direction === "right") {
 
-            for(x = sizeGrid - 1; x >= 0; x--) {
+            for(y = 0; y < sizeGrid; y++) {
 
-                for(y = 0; y < sizeGrid; y++) {
+                for(x = sizeGrid - 1; x >= 0; x--) {
 
-                    if(x !== 0 && grid[y][x] > 0 /*&& dontTouch[y][x] === 0*/) {
+                    if(x !== 0 && grid[y][x] > 0 && grid[y][x - 1] === grid[y][x]) {
 
-                        if(grid[y][x - 1] === grid[y][x]) {
-
-                            merged.push([y, x]);
-                            addScore((grid[y][x]) * 2);
-                            // grid[y][x] = 0;
-                            // grid[y][x - 1] *= 2;
-                            // dontTouch[y][x - 1] = 1;
-                            grid[y][x] *= 2;
-                            grid[y][x - 1] = 0;
-                            spawn = true;
-
-                        }
+                        merged.push([y, x]);
+                        addScore((grid[y][x]) * 2);
+                        grid[y][x] *= 2;
+                        grid[y][x - 1] = 0;
+                        spawn = true;
 
                     }
 
@@ -518,24 +507,17 @@ $(document).ready(function() {
 
         } else if(direction === "left") {
 
-            for(x = 0; x < sizeGrid; x++) {
+            for(y = 0; y < sizeGrid; y++) {
 
-                for(y = 0; y < sizeGrid; y++) {
+                for(x = 0; x < sizeGrid; x++) {
 
-                    if(x !== (sizeGrid - 1) && grid[y][x] > 0 /*&& dontTouch[y][x] === 0*/) {
+                    if(x !== (sizeGrid - 1) && grid[y][x] > 0 && grid[y][x + 1] === grid[y][x]) {
 
-                        if(grid[y][x + 1] === grid[y][x]) {
-
-                            merged.push([y, x]);
-                            addScore((grid[y][x]) * 2);
-                            // grid[y][x] = 0;
-                            // grid[y][x + 1] *= 2;
-                            // dontTouch[y][x + 1] = 1;
-                            grid[y][x] *= 2;
-                            grid[y][x + 1] = 0;
-                            spawn = true;
-
-                        }
+                        merged.push([y, x]);
+                        addScore((grid[y][x]) * 2);
+                        grid[y][x] *= 2;
+                        grid[y][x + 1] = 0;
+                        spawn = true;
 
                     }
 
@@ -566,9 +548,9 @@ $(document).ready(function() {
 
         if(direction === "up") {
 
-            for(y = sizeGrid - 1; y >= 0; y--) {
+            for(x = 0; x < sizeGrid; x++) {
 
-                for(x = 0; x < sizeGrid; x++) {
+                for(y = sizeGrid - 1; y >= 0; y--) {
 
                     if(y != 0 && grid[y][x] !== 0 && grid[y - 1][x] === 0) {
 
@@ -594,9 +576,9 @@ $(document).ready(function() {
 
         } else if(direction === "right") {
 
-            for(x = 0; x < sizeGrid; x++) {
+            for(y = 0; y < sizeGrid; y++) {
 
-                for(y = 0; y < sizeGrid; y++) {
+                for(x = 0; x < sizeGrid; x++) {
 
                     if(x != sizeGrid - 1 && grid[y][x] !== 0 && grid[y][x+1] === 0) {
 
@@ -623,9 +605,9 @@ $(document).ready(function() {
 
         } else if(direction === "left") {
 
-            for(x = sizeGrid - 1; x >= 0; x--) {
+            for(y = sizeGrid - 1; y >= 0; y--) {
 
-                for(y = sizeGrid - 1; y >= 0; y--) {
+                for(x = sizeGrid - 1; x >= 0; x--) {
 
                     if(x != 0 && grid[y][x] !== 0 && grid[y][x - 1] === 0) {
 
@@ -651,9 +633,9 @@ $(document).ready(function() {
 
         } else if(direction === "down") {
 
-            for(y = 0; y < sizeGrid; y++) {
+            for(x = sizeGrid - 1; x >= 0; x--) {
 
-                for(x = sizeGrid - 1; x >= 0; x--) {
+                for(y = 0; y < sizeGrid; y++) {
 
                     if(y != sizeGrid - 1 && grid[y][x] !== 0 && grid[y + 1][x] === 0) {
 
@@ -688,11 +670,7 @@ $(document).ready(function() {
 
             for(x = 0; x < sizeGrid; x++) {
 
-                if((grid[y + 1] !== undefined && grid[y + 1][x] === grid[y][x]) ||
-                    // (grid[y - 1] !== undefined && grid[y - 1][x] === grid[y][x]) ||
-                    // (grid[y][x + 1] !== undefined && grid[y][x + 1] === grid[y][x]) ||
-                    // (grid[y][x - 1] !== undefined && grid[y][x - 1] === grid[y][x])) {
-                    (grid[y][x + 1] !== undefined && grid[y][x + 1] === grid[y][x])) {
+                if((grid[y + 1] !== undefined && grid[y + 1][x] === grid[y][x]) || (grid[y][x + 1] !== undefined && grid[y][x + 1] === grid[y][x])) {
 
                     return true;
 
@@ -721,16 +699,19 @@ $(document).ready(function() {
                 move("left");
 
             };
+
             if (e.which === 38) {
 
                 e.preventDefault();
                 move("up");
 
             };
+
             if (e.which === 39) {
 
                 e.preventDefault();
                 move("right");
+
 
             };
             if (e.which === 40) {
@@ -751,6 +732,7 @@ $(document).ready(function() {
 
                 e.preventDefault();
                 undoIt();
+
             };
 
         });
@@ -778,24 +760,28 @@ $(document).ready(function() {
             move("up");
 
         })
+
         $(".click_button_left").on("click", function(e) {
 
             e.preventDefault();
             move("left");
 
         })
+
         $(".click_button_down").on("click", function(e) {
 
             e.preventDefault();
             move("down");
 
         })
+
         $(".click_button_right").on("click", function(e) {
 
             e.preventDefault();
             move("right");
 
         })
+
     }
 
     $(".replay_button").on("click", function(e) {
@@ -804,9 +790,12 @@ $(document).ready(function() {
         replay();
 
     });
+
     $(".undo_button").on("click", function(e) {
+
         e.preventDefault();
         undoIt();
+
     })
 
 
@@ -924,6 +913,7 @@ $(document).ready(function() {
             });
 
         });
+
         $gridHolder.on("mouseup", function(e2) {
 
             delay.push(e2.timeStamp);
@@ -949,6 +939,7 @@ $(document).ready(function() {
                     move("up");
 
                 }
+
             };
 
         });
@@ -961,10 +952,12 @@ $(document).ready(function() {
     {
         var text = "";
         var possible = "0123456789";
-        // var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-        for( var i=0; i < 5; i++ )
+        for(var i = 0; i < 5; i++) {
+
             text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        }
 
         return text;
     }
@@ -978,6 +971,7 @@ $(document).ready(function() {
     socket.on("direction", function(e) {
 
         switch(e) {
+
             case "up":
             move("up");
             break;
@@ -990,6 +984,7 @@ $(document).ready(function() {
             case "down":
             move("down");
             break;
+
         }
 
     })
@@ -997,12 +992,14 @@ $(document).ready(function() {
     socket.on("button", function(e) {
 
         switch(e) {
+
             case "undo":
             undoIt();
             break;
             case "replay":
             replay();
             break;
+
         }
 
     })
@@ -1012,7 +1009,6 @@ $(document).ready(function() {
         alert(e);
 
     })
-
 
     // En route !
     beginGame();
