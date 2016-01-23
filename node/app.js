@@ -23,12 +23,12 @@ var Game = function() {
     this.token;
     this.displays = [];
 
-}
+};
 var Display = function() {
     this.ip;
     this.socket;
     this.num;
-}
+};
 
 Game.prototype.move = function(direction) {
 
@@ -48,33 +48,31 @@ Game.prototype.score = function(score) {
 
     io.to(this.mobileSocket).emit("score", score);
 
-}
+};
 Game.prototype.sendToken = function() {
 
     io.to(this.mobileSocket).emit("token_return", this.token);
 
-}
+};
 Game.prototype.sendTokenDisplay = function(num) {
 
     io.to(this.displays[num].socket).emit("token_return", this.token);
 
-}
+};
 
 Game.prototype.remoteValidation = function() {
 
     io.to(this.deskSocket).emit("message", "Une télécommande est à présent connectée");
 
-}
+};
 Game.prototype.displayValidation = function(num) {
 
     io.to(this.displays[num].socket).emit("message", "Le display No " + num + "est connecté");
 
-}
+};
 
 
-// Quand un client se connecte, on le note dans la console
 io.sockets.on('connection', function (socket) {
-    // console.log("Connect");
 
     var clientType = socket.handshake.query.clientType;
     var ip = socket.handshake.address;
@@ -100,14 +98,9 @@ io.sockets.on('connection', function (socket) {
 
     } else if (clientType == "display") {
 
-        // console.log(empty);
-        // console.log(empty);
-        // console.log("Voici le nouvel index : " + index);
         if (games[token] !== undefined) {
-            var index = nextIndex();
-            // console.log("Voici le socktIt pour la cellule " + index + " : " + socket.id);
-            // console.log(games[token]);
 
+            var index = nextIndex();
             var display = new Display();
             display.ip = ip;
             display.socket = socket.id;
@@ -131,11 +124,12 @@ io.sockets.on('connection', function (socket) {
 
     } else {
 
-        if (ip !== "::ffff:163.5.223.65" && ip !== "::ffff:10.34.1.222") {
+        // Filtrage des parties par IP
+        // if (ip !== "::ffff:163.5.223.65" && ip !== "::ffff:10.34.1.222" && ip !== "::ffff:127.0.0.1") {
 
-            console.log(ip + " : Cette IP n'est pas authorisée à lancer une partie");
-            return false;
-        };
+        //     console.log(ip + " : Cette IP n'est pas authorisée à lancer une partie");
+        //     return false;
+        // };
 
         var game = new Game();
 
@@ -150,36 +144,24 @@ io.sockets.on('connection', function (socket) {
 
     socket.on("disconnect", function() {
         console.log("Le display socket  : " + socket.id + " veut se deco !");
-        // console.log("Disconnect");
-        // var socketId =  socket.id;
 
         for(var index in games) {
 
             var attr = games[index];
             for(var index2 in attr.displays) {
 
-                // console.log("Socket dispo : " + attr.displays[index2].socket);
-                // console.log("On veut delete : " + socketId);
-                // console.log(index2);
                 if (attr.displays[index2].socket === socket.id) {
 
-                // console.log(attr.displays[index2].num);
-                // console.log(attr.displays);
-                // console.log(games);
-                // console.log("On supprime son socket");
                 empty[attr.displays[index2].num] = true;
-                // attr.displays.splice(index2, 1);
                 delete(attr.displays[index2]);
 
-            };
+                };
+
+            }
 
         }
 
-    }
-
-    // console.log(empty);
-
-});
+    });
 
 
 
@@ -208,8 +190,6 @@ io.sockets.on('connection', function (socket) {
 
         if (games[data.token].displays[data.num] !== undefined /*&& games[token].displays.length === 16*/) {
 
-            // console.log("...............");
-            // console.log(data);
             io.to(games[data.token].displays[data.num].socket).emit("display", data);
 
         } else {
@@ -241,7 +221,6 @@ function nextIndex() {
         if (empty[key] === true) {
 
             empty[key] = false;
-            // console.log("L'index " + key + " est vide !");
             return key;
 
         }
@@ -249,5 +228,8 @@ function nextIndex() {
     }
 
 }
+
+var dateheure = horodatage();
+console.log("[" + dateheure[0] + " : " + dateheure[1] +  "] : Le serveur est lancé ! ");
 
 server.listen(8080);
