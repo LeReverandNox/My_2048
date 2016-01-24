@@ -18,6 +18,7 @@ $(document).ready(function() {
     var $scoreDisplay = $(".header_score");
     var $bestScoreDisplay = $(".header_best_score");
     var $twitterLink;
+    var WH;
 
 
     function generateMarkupAndGrid(size) {
@@ -60,7 +61,7 @@ $(document).ready(function() {
         $grid.appendTo($gridHolder);
 
         // Un peu de CSS
-        var WH = 119 * sizeGrid;
+        WH = 119 * sizeGrid;
 
         $gridHolder.css({width: WH,
             height : WH});
@@ -964,6 +965,7 @@ $(document).ready(function() {
         getLeaderboard();
         $leaderboardDisplay = $(".leaderboard_display");
         $leaderboardDisplay.html("");
+        $leaderboardDisplay.css({width: WH - 35});
         $leaderboardList = $("<ul class='leaderboard_list'></ul>");
         $leaderboardList.html("");
 
