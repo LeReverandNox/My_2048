@@ -227,7 +227,7 @@ $(document).ready(function() {
         $promptSubmit.on("click", function(e) {
 
             e.preventDefault();
-            var pseudo = $promptInput.val().trim()
+            var pseudo = $promptInput.val().trim().substr(0, 15);
 
             if (pseudo !== "") {
 

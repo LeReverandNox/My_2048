@@ -127,9 +127,10 @@ body {
     color: black;
 }
 .leaderboard_pseudo {
-    width: 250.1px;
-    display: inline-block;
-    text-align: center;
+    /*width: 250.1px;*/
+    margin-left: 40px;
+    /*display: inline-block;*/
+    /*text-align: center;*/
 }
 .leaderboard_score {
   float: right;
