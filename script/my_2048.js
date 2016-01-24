@@ -214,7 +214,7 @@ $(document).ready(function() {
 
         $promptScore = $("<div class='prompt_score'></div>");
         $promptText = $("<p class='prompt_text'>Vous avez marqué " + score + " points ! Enregistrez votre score !</p>");
-        $promptInput = $("<input type='text' placeholder='Votre pseudo...''>");
+        $promptInput = $("<input type='text' placeholder='Votre pseudo...'' autofocus>");
         $promptSubmit = $("<button class='prompt_submit'>Envoyer</button>");
 
         $promptText.appendTo($promptScore);
