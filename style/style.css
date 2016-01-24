@@ -88,6 +88,52 @@ body {
   margin-right: 0px;
 }
 
+.leaderboard_button {
+    margin: 0 auto;
+    border-radius: 3px;
+    padding: 0 20px;
+    text-decoration: none;
+    color: #f9f6f2;
+    height: 40px;
+    line-height: 42px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    width: 35%;
+    background: #edcc61;
+   -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+ }
+
+ .leaderboard_display {
+    display: none;
+    color: #f9f6f2;
+    background: #edcc61;
+    border-radius: 10px;
+    line-height: 40px;
+    padding: 5px 33px;
+    text-align: left;
+    position: absolute;
+    z-index: 9999;
+    width: 440px;
+}
+.leaderboard_position {
+    width: 35px;
+    text-align: center;
+    display: inline-block;
+    float: left;
+    color: black;
+}
+.leaderboard_pseudo {
+    width: 250px;
+    display: inline-block;
+    text-align: center;
+}
+.leaderboard_score {
+  float: right;
+}
 .header_score, .header_score_title, .header_best_score, .header_best_score_title {
 
     display: inline-block;
@@ -162,14 +208,24 @@ body {
     top: 35%;
 }
 .loose {
-    top: 42%;
+    top: 40%;
 }
 .share {
     position: absolute;
-    top: 50%;
+    top: 65%;
     left: 36%;
     text-align: center;
     display: none;
+}
+.prompt_score {
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  display: none;
+}
+.prompt_text {
+  margin-bottom: 10px;
 }
 .twitter-share-button {
     margin-top: 5px;

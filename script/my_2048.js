@@ -8,6 +8,7 @@ $(document).ready(function() {
 
     var score = 0;
     var bestScore = 0;
+    var leaderboard = [];
     var spawn = false;
     var end = false;
 
@@ -116,6 +117,7 @@ $(document).ready(function() {
 
         };
 
+        displayLeaderboad();
         getBestScore();
 
         displayBestScore();
@@ -130,7 +132,7 @@ $(document).ready(function() {
             endGame();
 
         };
-
+        // victory();
     }
 
     function endGame(tuile) {
@@ -138,23 +140,6 @@ $(document).ready(function() {
         $(document).off();
         $(".click_button").off();
         $gridHolder.off();
-        $(document).keydown(function(e) {
-
-            if (e.which === 82) {
-
-                e.preventDefault();
-                replay();
-
-            };
-
-            if (e.which === 85) {
-
-                e.preventDefault();
-                undoIt();
-
-            };
-
-        });
 
         end = true;
 
@@ -185,6 +170,7 @@ $(document).ready(function() {
 
         $(".message").remove();
         $(".share").remove();
+        $(".prompt_score").remove();
         $gridHolder.removeClass("gameover");
         $gridHolder.removeClass("victory");
 
@@ -224,17 +210,77 @@ $(document).ready(function() {
 
       }
 
+      function promptScore() {
+
+        $promptScore = $("<div class='prompt_score'></div>");
+        $promptText = $("<p class='prompt_text'>Vous avez marqué " + score + " points ! Enregistrez votre score !</p>");
+        $promptInput = $("<input type='text' placeholder='Votre pseudo...''>");
+        $promptSubmit = $("<button class='prompt_submit'>Envoyer</button>");
+
+        $promptText.appendTo($promptScore);
+        $promptInput.appendTo($promptScore);
+        $promptSubmit.appendTo($promptScore);
+        $promptScore.appendTo($mainSection);
+
+
+        $promptSubmit.on("click", function(e) {
+
+            e.preventDefault();
+            var pseudo = $promptInput.val().trim()
+
+            if (pseudo !== "") {
+
+                addToLeaderboard(pseudo, score);
+
+                $promptText.html("Merci !");
+                $promptInput.remove();
+                $promptSubmit.remove();
+
+                $(document).keydown(function(e) {
+
+                    if (e.which === 82) {
+
+                        e.preventDefault();
+                        replay();
+
+                    };
+
+                    if (e.which === 85) {
+
+                        e.preventDefault();
+                        undoIt();
+
+                    };
+
+                });
+
+            };
+
+        });
+
+      }
+
+      function addToLeaderboard(pseudo, score) {
+
+        leaderboard.push([pseudo, score]);
+        sortLeaderboard();
+        setLeaderboard();
+
+      }
+
       function victory() {
 
         $gridHolder.addClass("victory");
         $victoryMessage = $("<p class='message win'>Félicitations !<br />Vous avez atteint 2048 !</p>");
         $victoryMessage.appendTo($mainSection);
 
+        promptScore();
         shareBlock();
 
         setTimeout(function() {
 
             $share.fadeIn(1000);
+            $promptScore.fadeIn(1000);
             $victoryMessage.fadeIn(1000);
 
         }, 1000);
@@ -247,11 +293,13 @@ $(document).ready(function() {
         $gameOverMessage = $("<p class='message loose'>Dommage, vous avez perdu !</p>");
         $gameOverMessage.appendTo($mainSection);
 
+        promptScore();
         shareBlock();
 
         setTimeout(function() {
 
             $share.fadeIn(1000);
+            $promptScore.fadeIn(1000);
             $gameOverMessage.fadeIn(1000);
 
         }, 1000);
@@ -862,7 +910,95 @@ $(document).ready(function() {
     }
 
 
+    function getLeaderboard() {
 
+        if(localStorage.getItem("Leaderboard2048") !== null) {
+
+            leaderboard = JSON.parse(localStorage.getItem("Leaderboard2048"));
+
+        }
+
+    }
+
+    function setLeaderboard() {
+
+        localStorage.setItem("Leaderboard2048", JSON.stringify(leaderboard));
+
+    }
+
+    function sortLeaderboard() {
+
+        var ordered = false;
+
+        while (!ordered) {
+
+            ordered = true
+            for(var i = 0; i < leaderboard.length - 1; i++) {
+
+                if (leaderboard[i][1] < leaderboard[i + 1][1]) {
+
+                    var tmp = leaderboard[i];
+                    leaderboard[i] = leaderboard[i + 1];
+                    leaderboard[i + 1] = tmp;
+
+                    ordered = false;
+
+                };
+
+            }
+
+        }
+
+        if (leaderboard.length > 10) {
+
+            leaderboard.splice(10, leaderboard.length);
+
+        };
+
+        return true;
+
+    }
+
+    function displayLeaderboad() {
+
+        getLeaderboard();
+        $leaderboardDisplay = $(".leaderboard_display");
+        $leaderboardDisplay.html("");
+        $leaderboardList = $("<ul class='leaderboard_list'></ul>");
+        $leaderboardList.html("");
+
+        var j = 1;
+
+        if (leaderboard.length === 0) {
+
+            $leaderboardNoScore = $("<p class='leaderboard_no_score'>Il n'y a pas encore de score !</p>");
+            $leaderboardNoScore.appendTo($leaderboardDisplay);
+
+        } else {
+
+            for (var i = 0; i < leaderboard.length; i++) {
+
+                $leaderboardLine = $("<li><span class='leaderboard_position'>" + j + "</span> <span class='leaderboard_pseudo'>" + leaderboard[i][0] + "</span> <span class='leaderboard_score'>"+ leaderboard[i][1] +" pts</span>");
+                $leaderboardLine.appendTo($leaderboardList);
+                j++;
+            }
+
+            $leaderboardList.appendTo($leaderboardDisplay);
+
+        }
+
+
+        $(".leaderboard_button").hover(function() {
+
+            $leaderboardDisplay.css({display: "block"});
+
+        }, function() {
+
+            $leaderboardDisplay.css({display: "none"});
+
+        });
+
+    }
 
     // BACKUP
     function backupGrid() {
